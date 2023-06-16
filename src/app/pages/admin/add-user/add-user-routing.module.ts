@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: AddUserPage
+  },
+  {
+    path: 'add-sector',
+    loadChildren: () => import('./add-sector/add-sector.module').then( m => m.AddSectorPageModule)
   }
 ];
 
