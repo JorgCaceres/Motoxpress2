@@ -12,11 +12,15 @@ const routes: Routes = [
         path: 'orden-map',
         loadChildren: () => import('./orden-map/orden-map.module').then( m => m.OrdenMapPageModule)
       },
-      // {
-      //   path: 'orden-rider',
-      //   loadChildren: () => import('./orden-rider/orden-rider.module').then( m => m.OrdenRiderPageModule)
-      // },
+      {
+        path: 'orden-rider',
+        loadChildren: () => import('./orden-rider/orden-rider.module').then( m => m.OrdenRiderPageModule)
+      },
     ]
+  },
+  {
+    path: 'orden-rider',
+    loadChildren: () => import('./orden-rider/orden-rider.module').then( m => m.OrdenRiderPageModule)
   },
 ];
 

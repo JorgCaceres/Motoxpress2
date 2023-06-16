@@ -24,10 +24,6 @@
           <p>{{profile?.phone}} | {{profile?.email}}</p>
         </ion-label>
       </ion-item>
-      <ion-item lines="none" detail="true" [routerLink]="['/', 'tabs', 'address']">
-        <ion-icon name="home-outline" slot="start" color="dark"></ion-icon>
-        <h5>Manage Addresses</h5>
-      </ion-item>
     </ion-list>
   
     <ion-list>
@@ -37,12 +33,12 @@
       <ion-text class="ion-text-center" *ngIf="!orders || orders?.length == 0">
         <p>No Orders Placed Yet</p>
       </ion-text>
-      <app-orders 
+      <app-ordenes-rider 
         *ngFor="let order of orders" 
         [order]="order"
         (reorder)="reorder($event)"
         (help)="getHelp($event)">
-      </app-orders>
+      </app-ordenes-rider>
     </ion-list>
   </ng-container>
 

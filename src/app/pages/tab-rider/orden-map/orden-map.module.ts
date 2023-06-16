@@ -7,6 +7,8 @@ import { IonicModule } from '@ionic/angular';
 import { OrdenMapPageRoutingModule } from './orden-map-routing.module';
 
 import { OrdenMapPage } from './orden-map.page';
+import { VieeProfileComponent } from 'src/app/components/viee-profile/viee-profile.component';
+import { EmptyScreen2Component } from 'src/app/components/empty-screen2/empty-screen2.component';
 
 @NgModule({
   imports: [
@@ -15,6 +17,6 @@ import { OrdenMapPage } from './orden-map.page';
     IonicModule,
     OrdenMapPageRoutingModule
   ],
-  declarations: [OrdenMapPage]
+  declarations: [OrdenMapPage, VieeProfileComponent, EmptyScreen2Component]
 })
 export class OrdenMapPageModule {}
