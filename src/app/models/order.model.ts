@@ -17,5 +17,8 @@ export class Order {
         public id?: string,
         public uid?: string,
         public instruction?: string,
+        public usuarioId?: string,
+        public rider?: string,
+        public cordenas_entrega?: string,
     ) {}
 }

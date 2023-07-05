@@ -26,10 +26,19 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: '/tabs/home',
+        redirectTo: '/tabs/account',
         pathMatch: 'full'
-      }
+      },
+      {
+        path: 'ver-asignadas',
+        loadChildren: () => import('./ver-asignadas/ver-asignadas.module').then( m => m.VerAsignadasPageModule)
+      },
+    
     ]
+  },
+  {
+    path: 'ver-asignadas/geo/:lat/:lng',
+    loadChildren: () => import('./geo/geo.module').then( m => m.GeoPageModule)
   },
   {
     path: 'restaurants/:restaurantId',
@@ -39,6 +48,12 @@ const routes: Routes = [
     path: 'address',
     loadChildren: () => import('./address/address.module').then( m => m.AddressPageModule)
   },
+  {
+    path: 'rider-asignado',
+    loadChildren: () => import('./rider-asignado/rider-asignado.module').then( m => m.RiderAsignadoPageModule)
+  },
+  
+
   
 ];
 

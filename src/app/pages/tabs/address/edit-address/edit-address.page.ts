@@ -36,34 +36,34 @@ export class EditAddressPage implements OnInit {
     this.checkForUpdate();
   }
 
-  checkForUpdate() {
+  async checkForUpdate() {
     this.isLoading = true;
     this.location.title = 'Locating...';
     this.isLocationFetched = false;
-    this.route.queryParams.subscribe(async(data) => {
-      console.log('data: ', data);
-      if(data['data']) {
-        const address = JSON.parse(data['data']);
-        if(address?.lat) {
-          this.center = {
-            lat: address.lat,
-            lng: address.lng
-          };
-          this.update = true;
-          this.location.lat = this.center.lat;
-          this.location.lng = this.center.lng;
-          this.location.address = address.address;
-          this.location.title = address.title;
-          if(!address?.from) this.id = address.id;
-        }
-        if(address.from) this.from = address.from;
-        await this.initForm(address);
-        this.toggleFetched();
-      } else {
-        this.update = false;
-        this.initForm();
+    // this.route.queryParams.subscribe(async(data) => {});
+    const data = this.route.snapshot.queryParams;
+    console.log('data: ', data);
+    if(data['data']) {
+      const address = JSON.parse(data['data']);
+      if(address?.lat) {
+        this.center = {
+          lat: address.lat,
+          lng: address.lng
+        };
+        this.update = true;
+        this.location.lat = this.center.lat;
+        this.location.lng = this.center.lng;
+        this.location.address = address.address;
+        this.location.title = address.title;
+        if(!address?.from) this.id = address.id;
       }
-    });
+      if(address.from) this.from = address.from;
+      await this.initForm(address);
+      this.toggleFetched();
+    } else {
+      this.update = false;
+      this.initForm();
+    }
   }
 
   initForm(address?) {

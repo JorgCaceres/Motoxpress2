@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { Cart } from 'src/app/models/cart.model';
+import { Cart } from 'src/app/interfaces/cart.interface';
+// import { Cart } from 'src/app/models/cart.model';
 import { Item } from 'src/app/models/item.model';
 import { Order } from 'src/app/models/order.model';
 import { Restaurant } from 'src/app/models/restaurant.model';
@@ -60,15 +61,19 @@ export class CartService {
         {
           text: 'Yes',
           handler: () => {
-            this.clearCart();
-            this.model = {} as Cart;
-            if(order) {
-              this.orderToCart(order);
-            } else this.quantityPlus(index, items, data);
+            this.clear(index, items, data, order);
           }
         }
       ]
     );
+  }
+
+  async clear(index, items, data, order?) {
+    await this.clearCart();
+    this.model = {} as Cart;
+    if(order) {
+      this.orderToCart(order);
+    } else this.quantityPlus(index, items, data);
   }
 
   async orderToCart(order: Order) {
@@ -89,7 +94,8 @@ export class CartService {
     try {
       if(items) {
         console.log('model: ', this.model);
-        this.model.items = [...items];
+        this.model.items = [...items];      
+        if(this.model.from) this.model.from = '';
       }
       if(restaurant) {
         // this.model.restaurant = {}; 
@@ -104,6 +110,7 @@ export class CartService {
       }
       await this.calculate();
       this._cart.next(this.model);
+      return this.model;
     } catch(e) {
       console.log(e);
       throw(e);
@@ -114,7 +121,10 @@ export class CartService {
     try {
       if(items) {
         console.log('model: ', this.model);
-        this.model.items = [...items];
+        this.model.items = [...items];        
+        if(this.model.from) this.model.from = '';
+      } else {
+        this.model.from = 'cart';
       }
       console.log('item: ', this.model.items[index]);
       if(this.model.items[index].quantity && this.model.items[index].quantity !== 0) {
@@ -124,6 +134,7 @@ export class CartService {
       }
       await this.calculate();
       this._cart.next(this.model);
+      return this.model;
     } catch(e) {
       console.log(e);
       throw(e);

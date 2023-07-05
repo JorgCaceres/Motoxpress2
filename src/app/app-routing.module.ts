@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './guard/auth.guard';
+import { AuthGuard } from './guards/auth/auth.guard';
 
 const routes: Routes = [
   // {
@@ -30,14 +30,6 @@ const routes: Routes = [
     canLoad: [AuthGuard],
     data: {
       type: 'admin'
-    }
-  },
-  {
-    path: 'tab-rider',
-    loadChildren: () => import('./pages/tab-rider/tab-rider.module').then( m => m.TabRiderPageModule),
-    canLoad: [AuthGuard],
-    data: {
-      type: 'rider'
     }
   },
 ];

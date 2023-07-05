@@ -1,7 +1,8 @@
 .dotStyle {
     border: 1px solid var(--ion-color-success);
-    padding: 0 0.1rem; // top right bottom left
-    margin-right: 2vw;
+}
+.dotNonVeg {
+    border: 1px solid var(--ion-color-primary);
 }
 
 ion-item {
@@ -9,6 +10,10 @@ ion-item {
 }
 ion-text {
     font-size: 0.8rem;
+    span {
+        padding: 0 0.1rem; // top right bottom left
+        margin-right: 2vw;
+    }
 }
 ion-label {
     font-size: 0.8rem !important;

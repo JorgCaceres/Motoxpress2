@@ -7,6 +7,8 @@ export class User {
         public uid?: string,
         public type?: string,
         public status?: string,
+        public type_user?: string,
+        public asignado?: boolean,
     ) {}
 
 }

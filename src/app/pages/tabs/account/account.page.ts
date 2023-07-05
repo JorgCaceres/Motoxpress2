@@ -2,12 +2,14 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { EditProfileComponent } from 'src/app/components/edit-profile/edit-profile.component';
+import { Strings } from 'src/app/enum/strings.enum';
 import { Order } from 'src/app/models/order.model';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { CartService } from 'src/app/services/cart/cart.service';
 import { GlobalService } from 'src/app/services/global/global.service';
 import { OrderService } from 'src/app/services/order/order.service';
 import { ProfileService } from 'src/app/services/profile/profile.service';
+import { AllorderService } from '../../../services/order/allorder.service';
 
 @Component({
   selector: 'app-account',
@@ -21,6 +23,7 @@ export class AccountPage implements OnInit, OnDestroy {
   orders: Order[] = [];
   ordersSub: Subscription;
   profileSub: Subscription;
+  user_type: string;
 
   constructor(
     private navCtrl: NavController,
@@ -42,6 +45,13 @@ export class AccountPage implements OnInit, OnDestroy {
       this.profile = profile;
       console.log(this.profile);
     });
+    if (this.profile && this.profile.type_user) {
+      this.user_type = this.profile.type_user;
+      console.log('PERFIL TABS:', this.user_type);
+    } else {
+      this.user_type = 'Tipo de usuario no disponible'; // Establece un valor predeterminado
+      console.error('El objeto profile es nulo o la propiedad type_user es indefinida');
+    }
     this.getData();
   }
 
@@ -52,10 +62,26 @@ export class AccountPage implements OnInit, OnDestroy {
     this.isLoading = false; 
   }
 
+  confirmLogout() {
+    this.global.showAlert(
+      'Are you sure you want to sign-out?',
+      'Confirm',
+      [{
+        text: 'No',
+        role: 'cancel'
+      }, {
+        text: 'Yes',
+        handler: () => {
+          this.logout();
+        }
+      }]
+    );
+  }
+
   logout() {
     this.global.showLoader();
     this.authService.logout().then(() => {
-      this.navCtrl.navigateRoot('/login');
+      this.navCtrl.navigateRoot(Strings.LOGIN);
       this.global.hideLoader();
     })
     .catch(e => {

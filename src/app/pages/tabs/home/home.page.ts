@@ -1,3 +1,4 @@
+import { Banner } from 'src/app/models/banner.model';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -17,7 +18,7 @@ import { LocationService } from 'src/app/services/location/location.service';
 })
 export class HomePage implements OnInit, OnDestroy {
 
-  banners: any[] = [];
+  banners: Banner[] = [];
   restaurants: Restaurant[] = [];
   isLoading: boolean = false;
   location = {} as Address;
@@ -59,7 +60,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   getBanners() {
     this.api.getBanners().then(data => {
-      console.log(data);
+      console.log('banners: ', data);
       this.banners = data;
     })
     .catch(e => {
@@ -128,6 +129,7 @@ export class HomePage implements OnInit, OnDestroy {
         }
       };
       const modal = await this.global.createModal(options);
+      console.log('modal value: ', modal);
       if(modal) {
         if(modal == 'add') {
           this.addAddress(this.location);
@@ -136,6 +138,11 @@ export class HomePage implements OnInit, OnDestroy {
         } else {
           this.location = modal;
           await this.getData();
+        }
+      } else {
+        console.log('location value: ', this.location);
+        if(!this.location || !this.location?.lat) {
+          this.searchLocation('home', 'home-modal');
         }
       }
     } catch(e) {

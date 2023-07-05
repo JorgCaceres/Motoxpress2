@@ -39,7 +39,7 @@ import { AngularFireStorageModule } from '@angular/fire/compat/storage';
     provideRemoteConfig(() => getRemoteConfig()),
     provideStorage(() => getStorage())
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [Geolocation,{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

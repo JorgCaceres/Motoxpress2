@@ -1,13 +1,32 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { BehaviorSubject } from 'rxjs';
+// import { map, take } from 'rxjs/operators';
+import { Strings } from 'src/app/enum/strings.enum';
 import { User } from 'src/app/models/user.model';
 import { ApiService } from '../api/api.service';
 import { StorageService } from '../storage/storage.service';
+
+export class AuthUserId {
+  constructor(public uid: string) {}
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
+  public static UNKNOWN_USER = null;
+  private _uid = new BehaviorSubject<AuthUserId>(AuthService.UNKNOWN_USER);
+
+  // get userId() {
+  //   return this._uid.asObservable().pipe(map(uid => {
+  //       console.log(uid);
+  //       if(uid) return uid
+  //       else return AuthService.UNKNOWN_USER;
+  //     })
+  //   );
+  // }
 
   constructor(
     private storage: StorageService,
@@ -30,11 +49,18 @@ export class AuthService {
   }
 
   async getId() {
-    return (await this.storage.getStorage('uid')).value;
+    const user = this._uid.value;
+    console.log('auth user id: ', user?.uid);
+    if(user?.uid) {
+      return user.uid;
+    } else {
+      return (await this.storage.getStorage(Strings.UID)).value;
+    }
   }
 
   setUserData(uid) {
-    this.storage.setStorage('uid', uid);
+    this.storage.setStorage(Strings.UID, uid);
+    this._uid.next(new AuthUserId(uid));
   }
 
   async register(formValue, type?) {
@@ -47,7 +73,8 @@ export class AuthService {
         formValue.name,
         registeredUser.user.uid,
         type ? type : 'user',
-        'active'
+        'active', 
+        'cliente',
       );
       await this.apiService.collection('users').doc(registeredUser.user.uid).set(Object.assign({}, data));
       if(!type || type != 'restaurant') {
@@ -74,7 +101,8 @@ export class AuthService {
   async logout() {
     try {
       await this.fireAuth.signOut();
-      return this.storage.removeStorage('uid');
+      this._uid.next(AuthService.UNKNOWN_USER);
+      return this.storage.removeStorage(Strings.UID);
     } catch(e) {
       throw(e);
     }

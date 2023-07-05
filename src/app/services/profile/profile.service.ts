@@ -31,7 +31,8 @@ export class ProfileService {
         profile.name,
         uid,
         profile.type,
-        profile.status
+        profile.status,
+        profile.type_user
       );
       this._profile.next(data); 
       return data;
@@ -50,9 +51,11 @@ export class ProfileService {
         profile.name,
         profile.uid,
         profile.type,
-        profile.status
+        profile.status,
+        profile.type_user
       );
       this._profile.next(data);
+      return data;
     } catch(e) {
       console.log(e);
       throw(e);
@@ -63,6 +66,7 @@ export class ProfileService {
     try {
       await this.authService.updateEmail(profile.email, param.email, password);
       await this.updateProfile(profile, param);
+      return profile;
     } catch(e) {
       throw(e);
     }

@@ -9,7 +9,6 @@ import { GlobalService } from 'src/app/services/global/global.service';
   styleUrls: ['./admin.page.scss'],
 })
 export class AdminPage implements OnInit {
-
   constructor(
     public navCtrl: NavController,
     public global: GlobalService,

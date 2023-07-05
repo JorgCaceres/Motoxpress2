@@ -4,12 +4,13 @@ import { NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { ApiService } from 'src/app/services/api/api.service';
 import { CartService } from 'src/app/services/cart/cart.service';
-import { take } from 'rxjs/operators';
+// import { take } from 'rxjs/operators';
 import { Restaurant } from 'src/app/models/restaurant.model';
 import { Category } from 'src/app/models/category.model';
 import { Item } from 'src/app/models/item.model';
 import { GlobalService } from 'src/app/services/global/global.service';
-import { Cart } from 'src/app/models/cart.model';
+import { Cart } from 'src/app/interfaces/cart.interface';
+// import { Cart } from 'src/app/models/cart.model';
 
 @Component({
   selector: 'app-items',
@@ -43,15 +44,23 @@ export class ItemsPage implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {    
-    this.route.paramMap.pipe(take(1)).subscribe(paramMap => {
-      console.log('route data: ', paramMap);
-      if(!paramMap.has('restaurantId')) {
-        this.navCtrl.back();
-        return;
-      }
-      this.id = paramMap.get('restaurantId');
-      console.log('id: ', this.id);
-    });
+    const id = this.route.snapshot.paramMap.get('restaurantId');
+    console.log('check id: ', id);
+    if(!id) {
+      this.navCtrl.back();
+      return;
+    } 
+    this.id = id;
+    console.log('id: ', this.id);
+    // this.route.paramMap.pipe(take(1)).subscribe(paramMap => {
+    //   console.log('route data: ', paramMap);
+    //   if(!paramMap.has('restaurantId')) {
+    //     this.navCtrl.back();
+    //     return;
+    //   }
+    //   this.id = paramMap.get('restaurantId');
+    //   console.log('id: ', this.id);
+    // });
     this.cartSub = this.cartService.cart.subscribe(cart => {
       console.log('cart items: ', cart);
       this.cartData = {} as Cart;
@@ -62,10 +71,17 @@ export class ItemsPage implements OnInit, OnDestroy {
         this.cartData.totalPrice = this.storedData.totalPrice;
         if(cart?.restaurant?.uid === this.id) {
           this.allItems.forEach(element => {
+            let qty = false;
             cart.items.forEach(element2 => {
-              if(element.id != element2.id) return;
+              if(element.id != element2.id) {
+                // if((cart?.from && cart?.from == 'cart') && element?.quantity) element.quantity = 0;
+                return;
+              }
               element.quantity = element2.quantity;
+              qty = true;
             });
+            console.log(`element check (${qty}): `, element?.name + ' | ' + element?.quantity);
+            if(!qty && element?.quantity) element.quantity = 0;
           });
           console.log('allitems: ', this.allItems);
           this.cartData.items = this.allItems.filter(x => x.quantity > 0);
@@ -78,8 +94,13 @@ export class ItemsPage implements OnInit, OnDestroy {
           if(this.veg == true) this.items = this.allItems.filter(x => x.veg === true);
           else this.items = [...this.allItems];
         }
-      } 
-      
+      } else {
+        this.allItems.forEach(element => {            
+          element.quantity = 0;
+        });
+        if(this.veg == true) this.items = this.allItems.filter(x => x.veg === true);
+        else this.items = [...this.allItems];
+      }
     });    
     this.getItems();
   }

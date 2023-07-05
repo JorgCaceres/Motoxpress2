@@ -40,13 +40,13 @@
 
 <ion-footer *ngIf="cartData?.totalItem > 0">
   <ion-toolbar color="success">
-    <ion-label color="white">
+    <ion-label >
       <h4>{{cartData?.totalItem}} Item<span *ngIf="cartData?.totalItem > 1">s</span> | ₹{{cartData?.totalPrice | number: '0.2-2'}}</h4>
       <ion-text color="light">
         <p>Extra charges may apply</p>
       </ion-text>
     </ion-label>
-    <ion-button slot="end" fill="clear" color="white" (click)="viewCart()">
+    <ion-button slot="end" fill="clear"  (click)="viewCart()">
       <ion-icon slot="end" name="basket-outline"></ion-icon>
       VIEW CART
     </ion-button>
