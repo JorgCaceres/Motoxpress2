@@ -39,4 +39,9 @@ export class TabsPage {
     this.isLoading = false; 
   }
 
+  recargarPagina() {
+    window.location.reload();
+  }
+  
+
 }

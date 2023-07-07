@@ -11,6 +11,13 @@ import { OrderService } from 'src/app/services/order/order.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { Subscription } from 'rxjs';
 import { interval } from 'rxjs';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Capacitor } from '@capacitor/core';
+
+import { Firestore, addDoc, collection } from '@angular/fire/firestore';
+import { Storage, getDownloadURL, ref, uploadBytes } from '@angular/fire/storage';
+import { LoadingController, ToastController } from '@ionic/angular';
+import { Screenshot } from 'capacitor-screenshot';
 
 declare var google;
 
@@ -21,6 +28,9 @@ declare var google;
 })
 export class GeoPage implements OnInit {
 
+  selectedImage: any;
+
+  image: any;
 
   tiempoTranscurrido: number = 0;
   timer: any;
@@ -40,45 +50,51 @@ export class GeoPage implements OnInit {
   lat: any;
   lng: any;
   boton_recarga: boolean = false;
+  boton_ruta_recogida: boolean = false;
+  boton_entrega: boolean = false;
+  distancia_validacion: number;
 
   id_rider: any;
   entrega: any = {}
   id_orden_asig: string;
   id_usuario_asig: string;
   orders: any = {};
-  direccion_llegada: any;
+  direccion_llegada_coordenadas: any;
+  direccion_llegada_lugar: any;
+  minutos: any;
+  segundos: any;
+  url_imagen: any;
+  foto_boolean: boolean = false;
 
   constructor(private activatedRoute: ActivatedRoute, private router: Router,
     private navCtrl: NavController,
     private route: ActivatedRoute,
     private api: ApiService,
-    private cartService: CartService,
     private global: GlobalService,
     private orderService: OrderService,
-    private authService: AuthService) { }
+    private authService: AuthService,
+    private firestore: Firestore,
+    private storage: Storage,
+    private toastController: ToastController,
+    private loadingCtrl: LoadingController) { }
+
 
 
   async ngOnInit() {
 
     this.ordersSub = this.orderService.orders.subscribe(order => {
-      console.log('order data: ', order);
       this.orders = order;
     }, e => {
       console.log(e);
     });
 
-
     this.lat = this.route.snapshot.paramMap.get('lat');
     this.lng = this.route.snapshot.paramMap.get('lng');
 
-    console.log('check id: ', this.lat);
     if (!this.lat) {
       this.navCtrl.back();
       return;
     }
-
-    console.log('LAT:', this.lat);
-    console.log('LNG: ', this.lng);
 
     await this.cargarMapa();
     this.autocompletado(this.map, this.marker);
@@ -86,7 +102,7 @@ export class GeoPage implements OnInit {
   }
 
   //VARIABLES PARA EL MAPA:
-  latitud: number;
+  latitud: number = 0;
   longitud: number;
   //VARIABLE MAP: variable a través de la cual se carga el mapa de google.
   map: any;
@@ -147,10 +163,14 @@ export class GeoPage implements OnInit {
 
     });
   }
+
   async calcularRuta() {
     var geolocation = await this.obtenerUbicacion();
-    this.latitud = geolocation.coords.latitude;
-    this.longitud = geolocation.coords.longitude;
+
+    if (this.latitud == 0) {
+      this.latitud = geolocation.coords.latitude;
+      this.longitud = geolocation.coords.longitude;
+    }
 
     var request = {
       origin: { lat: this.latitud, lng: this.longitud },
@@ -160,20 +180,43 @@ export class GeoPage implements OnInit {
 
     this.directionsService.route(request, (resultado, status) => {
       this.directionsRenderer.setDirections(resultado);
+
+      if (status === google.maps.DirectionsStatus.OK) {
+        var distancia = google.maps.geometry.spherical.computeDistanceBetween(
+          resultado.routes[0].legs[0].start_location,
+          resultado.routes[0].legs[0].end_location
+        );
+        var distanciaEntera = parseInt(distancia);
+        this.distancia_validacion = distanciaEntera
+        console.log('Distancia VALIDACION:', this.distancia_validacion);
+      } else {
+        console.error('Error al calcular la ruta:', status);
+      }
     });
     this.marker.setPosition(null);
-
+    if (this.boton_ruta_recogida == false) {
+      this.boton_ruta_recogida = true;
+    } else {
+      this.boton_entrega = true;
+    }
   }
 
+
   async marcarRecogida() {
-    await this.getData();
+    this.distancia_validacion = 100
+    if (this.distancia_validacion < 150) {
+      await this.getData();
 
-    if (this.direccion_llegada && this.direccion_llegada.lat) {
-      this.latitud = parseInt(this.direccion_llegada.lat, 10);
+      this.latitud = this.direccion_llegada_coordenadas.lat;
+      this.longitud = this.direccion_llegada_coordenadas.lng;
+
+
+      this.boton_recarga = true;
+      this.global.showAlert('Inicia ruta para ver el destino', 'Retiro Marcado',);
+    } else {
+      this.global.errorToast('Error, acercate al punto de recogida para');
+
     }
-
-    this.longitud = this.direccion_llegada && this.direccion_llegada.ln;
-    this.boton_recarga = true;
 
   }
 
@@ -183,25 +226,35 @@ export class GeoPage implements OnInit {
     this.id_rider = this.id_rider.__zone_symbol__value;
     this.id_rider = this.id_rider.toString(); // Convertir a cadena
 
-    console.log('ID RIDER:', this.id_rider);
 
     const userRef = db.collection('users').doc(this.id_rider);
     const userSnapshot = await userRef.get();
     this.entrega = userSnapshot.data(); // Obtener los datos del documento
 
+    console.log('ENTREGA SNAPSHOT:', this.entrega);
+
     this.id_orden_asig = this.entrega.orden_asignada.id_orden;
-    this.direccion_llegada = this.entrega.orden_asignada.lugar;
-    console.log('ORDER LUGAR ', this.direccion_llegada);
+    this.id_usuario_asig = this.entrega.orden_asignada.id_usuario;
+    this.direccion_llegada_coordenadas = this.entrega.entrega;
+    this.direccion_llegada_lugar = this.entrega.entrega.lugar;
+    console.log('Direccion LLEGADA ', this.direccion_llegada_coordenadas.lat);
 
     const orderRef = db.collection('orders').doc(this.id_usuario_asig).collection('all').doc(this.id_orden_asig);
     const orderSnapshot = await orderRef.get();
     this.orders = orderSnapshot.data();
+
+    console.log('ESTA ORDEN ID:', this.id_orden_asig);
+    console.log('ESTA ORDEN:', this.orders);
   }
 
-
+  //Funciones de conteo de tiempo
   startTimer() {
     this.timer = interval(1000).subscribe(() => {
       this.tiempoTranscurrido++;
+
+      // Calcular minutos y segundos
+      this.minutos = Math.floor(this.tiempoTranscurrido / 60);
+      this.segundos = this.tiempoTranscurrido % 60;
     });
   }
 
@@ -213,27 +266,171 @@ export class GeoPage implements OnInit {
   }
 
 
+  //FUNCIONES DE CAMARA
 
-  finalizarPedido() {
-    db.collection('users').doc(this.id_rider)
-      .update({
-        orden_asignada: {},
-        entrega: {}
-      })
-      .then(() => {
-        console.log('Orden entregada correctamente');
-      })
-      .catch((error) => {
-        console.log('Error al entregar la orden:', error);
+  //TOMAR FOTO
+  async takePicture() {
+    try {
+      if (Capacitor.getPlatform() != 'web') await Camera.requestPermissions();
+      const image = await Camera.getPhoto({
+        quality: 90,
+        // allowEditing: false,
+        source: CameraSource.Camera,
+        width: 600,
+        resultType: CameraResultType.DataUrl
       });
+      console.log('image: ', image);
+      this.image = image.dataUrl;
+      await this.showLoading();
+      const blob = this.dataURLtoBlob(image.dataUrl);
+      const url = await this.uploadImage(blob, image.format);
+      this.url_imagen = url;
+      const response = await this.addDocument('img', {
+        imageUrl: url,
+        id_orden: this.id_orden_asig,
+        id_rider: this.id_rider,
+        id_cliente: this.id_usuario_asig
+      });
+      await this.loadingCtrl.dismiss();
+      await this.presentToast();
+      this.foto_boolean = true;
+    } catch (e) {
+      console.log(e);
+      await this.loadingCtrl.dismiss();
+    }
+  }
 
-    db.collection('orders').doc(this.id_usuario_asig).collection('all').doc(this.id_orden_asig)
-      .update({
-        status: 'completed'
-      })
-      .catch((error) => {
-        console.log('Error al entregar la orden:', error);
-      });
+  dataURLtoBlob(dataurl: any) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  }
+
+  async uploadImage(blob: any, format: any) {
+    try {
+      const currentDate = Date.now();
+      const filePath = `img/${currentDate}.${format}`;
+      const fileRef = ref(this.storage, filePath);
+      const task = await uploadBytes(fileRef, blob);
+      console.log('task: ', task);
+      const url = getDownloadURL(fileRef);
+      return url;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  addDocument(path: any, data: any) {
+    const dataRef = collection(this.firestore, path);
+    return addDoc(dataRef, data);
+  }
+
+
+  base64toBlob(base64String: string) {
+    let b64Data = base64String;
+    console.log(b64Data);
+    let contentType = '';
+    let sliceSize = 512;
+
+    b64Data = b64Data.replace(/data\:image\/(jpeg|jpg|png)\;base64\,/gi, '');
+
+    let byteCharacters = atob(b64Data);
+    let byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      let slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      let byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      let byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    // let blob = new Blob(byteArrays, { type: contentType });
+    // let blob = new Blob(byteArrays, { type: `image/${b64DataObject.format}` });
+    let blob = new Blob(byteArrays, { type: `image/png` });
+    return blob;
+  }
+
+  async presentToast() {
+    const toast = await this.toastController.create({
+      message: 'Imagen cargada exitosamente',
+      duration: 3000,
+      position: 'bottom',
+      color: 'success'
+    });
+
+    await toast.present();
+  }
+
+  async showLoading() {
+    const loading = await this.loadingCtrl.create({
+      message: 'Loading...',
+      // duration: 3000,
+      spinner: 'circles'
+    });
+
+    loading.present();
+  }
+
+
+
+
+
+  async finalizarPedido() {
+    const confirm = await this.global.showAlert(
+      '¿Desea finalizar pedido?', // Mensaje de la alerta
+      'Confirmar', // Encabezado de la alerta
+      [
+        // Botones de la alerta
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            // Acción cuando se presiona el botón "Cancelar"
+            console.log('Cancelado');
+          }
+        },
+        {
+          text: 'Confirmar',
+          handler: () => {
+            this.global.showLoader();
+
+            db.collection('users').doc(this.id_rider)
+              .update({
+                orden_asignada: {},
+                entrega: {},
+                asignado: false
+              })
+              .then(() => {
+                console.log('Orden entregada correctamente');
+              })
+              .catch((error) => {
+                console.log('Error al entregar la orden:', error);
+              });
+
+            db.collection('orders').doc(this.id_usuario_asig).collection('all').doc(this.id_orden_asig)
+              .update({
+                status: 'completed',
+                evidencia: this.url_imagen,
+                tiempo_espera: this.tiempoTranscurrido
+              })
+              .catch((error) => {
+                console.log('Error al entregar la orden:', error);
+              });
+              this.navCtrl.navigateRoot('/tabs/ver-asignadas');//REDIRIGE A VER PEDIDOS
+              this.global.hideLoader();
+          }
+        }
+      ]
+    );
   }
 
   ngOnDestroy() {
