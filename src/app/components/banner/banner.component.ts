@@ -17,10 +17,10 @@ export class BannerComponent  implements OnInit {
 
   ngOnInit() {}
 
-  goToRestaurant(data) {
+  goToRecogida(data) {
     console.log(data);
     if(data?.res_id) {
-      this.router.navigate(['/', 'tabs', 'restaurants', data.res_id]);
+      this.router.navigate(['/', 'tabs', 'recogidas', data.res_id]);
     }
   }
 

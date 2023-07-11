@@ -77,7 +77,7 @@ export class AuthService {
         'cliente',
       );
       await this.apiService.collection('users').doc(registeredUser.user.uid).set(Object.assign({}, data));
-      if(!type || type != 'restaurant') {
+      if(!type || type != 'recogida') {
         await this.setUserData(registeredUser.user.uid);
       }
       const userData = {

@@ -1,4 +1,4 @@
-export class Restaurant {
+export class Recogida {
     
     constructor(
         public uid: string,

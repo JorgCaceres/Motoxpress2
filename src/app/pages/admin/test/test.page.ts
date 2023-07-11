@@ -3,7 +3,7 @@ import { get } from 'http';
 import { Subscription } from 'rxjs';
 import { Address } from 'src/app/models/address.model';
 import { Order } from 'src/app/models/order.model';
-import { Restaurant } from 'src/app/models/restaurant.model';
+import { Recogida } from 'src/app/models/recogida.model';
 import { ApiService } from 'src/app/services/api/api.service';
 import { AllorderService } from 'src/app/services/order/allorder.service';
 import db from 'src/environments/configfb';

@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { ApiService } from 'src/app/services/api/api.service';
 import { CartService } from 'src/app/services/cart/cart.service';
 // import { take } from 'rxjs/operators';
-import { Restaurant } from 'src/app/models/restaurant.model';
+import { Recogida } from 'src/app/models/recogida.model';
 import { Category } from 'src/app/models/category.model';
 import { Item } from 'src/app/models/item.model';
 import { GlobalService } from 'src/app/services/global/global.service';
@@ -20,7 +20,7 @@ import { Cart } from 'src/app/interfaces/cart.interface';
 export class ItemsPage implements OnInit, OnDestroy {
 
   id: any;
-  data = {} as Restaurant;
+  data = {} as Recogida;
   items: Item[] = [];
   veg: boolean = false;
   isLoading: boolean;
@@ -44,7 +44,7 @@ export class ItemsPage implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {    
-    const id = this.route.snapshot.paramMap.get('restaurantId');
+    const id = this.route.snapshot.paramMap.get('recogidaId');
     console.log('check id: ', id);
     if(!id) {
       this.navCtrl.back();
@@ -54,11 +54,11 @@ export class ItemsPage implements OnInit, OnDestroy {
     console.log('id: ', this.id);
     // this.route.paramMap.pipe(take(1)).subscribe(paramMap => {
     //   console.log('route data: ', paramMap);
-    //   if(!paramMap.has('restaurantId')) {
+    //   if(!paramMap.has('recogidaId')) {
     //     this.navCtrl.back();
     //     return;
     //   }
-    //   this.id = paramMap.get('restaurantId');
+    //   this.id = paramMap.get('recogidaId');
     //   console.log('id: ', this.id);
     // });
     this.cartSub = this.cartService.cart.subscribe(cart => {
@@ -69,7 +69,7 @@ export class ItemsPage implements OnInit, OnDestroy {
         this.storedData = cart;
         this.cartData.totalItem = this.storedData.totalItem;
         this.cartData.totalPrice = this.storedData.totalPrice;
-        if(cart?.restaurant?.uid === this.id) {
+        if(cart?.recogida?.uid === this.id) {
           this.allItems.forEach(element => {
             let qty = false;
             cart.items.forEach(element2 => {
@@ -108,15 +108,15 @@ export class ItemsPage implements OnInit, OnDestroy {
   async getItems() {
     try {      
       this.isLoading = true;
-      this.data = {} as Restaurant;
+      this.data = {} as Recogida;
       this.cartData = {} as Cart;
       this.storedData = {} as Cart;
-      this.data = await this.api.getRestaurantById(this.id);
-      this.categories = await this.api.getRestaurantCategories(this.id);
-      this.allItems = await this.api.getRestaurantMenu(this.id);
+      this.data = await this.api.getRecogidaById(this.id);
+      this.categories = await this.api.getRecogidaCategories(this.id);
+      this.allItems = await this.api.getRecogidaMenu(this.id);
       this.items = [...this.allItems];
       console.log('items: ', this.items);
-      console.log('restaurant: ', this.data);
+      console.log('recogida: ', this.data);
       await this.cartService.getCartData();
       this.isLoading = false;
       // this.allItems.forEach((element, index) => {
@@ -141,7 +141,7 @@ export class ItemsPage implements OnInit, OnDestroy {
     const index = this.allItems.findIndex(x => x.id === item.id);
     console.log(index);
     if(!this.allItems[index].quantity || this.allItems[index].quantity == 0) {
-      if(!this.storedData.restaurant || (this.storedData.restaurant && this.storedData.restaurant.uid == this.id)) {
+      if(!this.storedData.recogida || (this.storedData.recogida && this.storedData.recogida.uid == this.id)) {
         console.log('index item: ', this.allItems);
         this.cartService.quantityPlus(index, this.allItems, this.data);
       } else {
@@ -160,8 +160,8 @@ export class ItemsPage implements OnInit, OnDestroy {
 
   saveToCart() {
     try {
-      this.cartData.restaurant = {} as Restaurant;
-      this.cartData.restaurant = this.data;
+      this.cartData.recogida = {} as Recogida;
+      this.cartData.recogida = this.data;
       console.log('save cartData: ', this.cartData);
       this.cartService.saveCart();
     } catch(e) {

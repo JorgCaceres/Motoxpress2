@@ -33,8 +33,8 @@ const routes: Routes = [
         loadChildren: () => import('./add-banner/add-banner.module').then( m => m.AddBannerPageModule)
       },
       {
-        path: 'add-restaurant',
-        loadChildren: () => import('./add-restaurant/add-restaurant.module').then( m => m.AddRestaurantPageModule)
+        path: 'add-recogida',
+        loadChildren: () => import('./add-recogida/add-recogida.module').then( m => m.AddRecogidaPageModule)
       },
       {
         path: 'add-menu-item',
@@ -61,8 +61,8 @@ const routes: Routes = [
 //     loadChildren: () => import('./add-banner/add-banner.module').then( m => m.AddBannerPageModule)
 //   },
 //   {
-//     path: 'add-restaurant',
-//     loadChildren: () => import('./add-restaurant/add-restaurant.module').then( m => m.AddRestaurantPageModule)
+//     path: 'add-recogida',
+//     loadChildren: () => import('./add-recogida/add-recogida.module').then( m => m.AddRecogidaPageModule)
 //   },
 //   {
 //     path: 'add-menu-item',

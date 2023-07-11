@@ -1,12 +1,12 @@
 import { Address } from "./address.model";
 import { Item } from "./item.model";
-import { Restaurant } from "./restaurant.model";
+import { Recogida } from "./recogida.model";
 
 export class Order {
     constructor(
         public address: Address,
-        public restaurant: Restaurant,
-        public restaurant_id: string,
+        public recogida: Recogida,
+        public recogida_id: string,
         public order: Item[],
         public total: number,
         public grandTotal: number,

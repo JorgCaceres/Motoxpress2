@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title color="tertiary">Cart</ion-title>
+    <ion-title color="tertiary">Carro de Ordenes</ion-title>
     <ion-buttons slot="start" *ngIf="urlCheck && urlCheck != 'tabs'">
       <ion-back-button [defaultHref]="getPreviousUrl()"></ion-back-button>
     </ion-buttons>
@@ -9,17 +9,17 @@
 
 <ion-content>
 
-  <app-empty-screen *ngIf="!model?.restaurant"></app-empty-screen>
+  <app-empty-screen *ngIf="!model?.recogida"></app-empty-screen>
 
-  <ng-container *ngIf="model?.restaurant">
+  <ng-container *ngIf="model?.recogida">
     <ion-list lines="none" class="borderBottomSmall">
       <ion-item>
         <ion-thumbnail slot="start">
-          <ion-img [src]="model?.restaurant?.cover ? model.restaurant.cover : 'assets/imgs/1.jpg'"></ion-img>
+          <ion-img [src]="model?.recogida?.cover ? model.recogida.cover : 'assets/imgs/1.jpg'"></ion-img>
         </ion-thumbnail>
         <ion-label>
-          <ion-text><h4>{{model?.restaurant?.name}}</h4></ion-text>
-          <ion-note>{{model?.restaurant?.address}}</ion-note>
+          <ion-text><h4>{{model?.recogida?.name}}</h4></ion-text>
+          <ion-note>{{model?.recogida?.address}}</ion-note>
         </ion-label>
       </ion-item>
     </ion-list>
@@ -41,6 +41,10 @@
         <ion-label color="dark">Cargo de servicio</ion-label>
         <ion-text slot="end" color="dark">${{model?.deliveryCharge | number: '0.2-2'}}</ion-text>
       </ion-item>
+      <ion-item lines="full">
+        <ion-label color="dark">Cargo por distancia</ion-label>
+        <ion-text slot="end" color="dark">${{ distancia_validacion | number: '0.2-2'}}</ion-text>
+      </ion-item>
       <ion-item lines="none">
         <ion-label color="dark">Total a pagar</ion-label>
         <ion-text slot="end" color="dark"><h5>${{model?.grandTotal | number: '0.2-2'}}</h5></ion-text>
@@ -48,17 +52,16 @@
     </ion-list>
 
   </ng-container>
-
-  <h3 *ngIf="location?.lat && location?.id && location?.id != ''">Direccion de entrega:</h3>
+  <h3 *ngIf="!input_entrega">Añade una direccion o escoge una ya guardada. </h3>
+  <p *ngIf="!input_entrega">Luego, recarga el mapa para actualizar la posicion de recogida e ingras una direccion de entrega</p>
+  <h3 *ngIf="input_entrega">Ingresa la direccion de entrega:</h3>
+  <ion-button  *ngIf="boton_recarca"  class="go-btn" expand="block" (click)="recargarMapa()">Recargar Mapa</ion-button>
   <div id="ruta">
-    <input id="input-autocomplete" type="text" placeholder="Buscar lugar" (input)="onInputChange($event)" cancelable="false" >
+    <input *ngIf="input_entrega" id="input-autocomplete" type="text" placeholder="Buscar lugar" (input)="onInputChange($event)" cancelable="false" >
   </div>
   <div id="map"></div>
   <ion-row class="botones-rutas">
     <ion-row *ngIf="location?.lat && location?.id && location?.id != ''">
-      <ion-col  >
-        <ion-button  *ngIf="boton_recarca"  class="go-btn" expand="block" (click)="recargarMapa()">Recargar Mapa</ion-button>
-      </ion-col>
       <ion-col   *ngIf="boton_iniciar"><ion-button class="go-btn" expand="block" (click)="calcularRuta()">Iniciar Ruta</ion-button>
       </ion-col>
     </ion-row>
@@ -66,7 +69,7 @@
   </ion-row> 
 </ion-content>
 
-<ion-footer *ngIf="model?.restaurant">
+<ion-footer *ngIf="model?.recogida">
   <ion-toolbar>
     <ion-row *ngIf="!location?.lat">
       <ion-col size="6">

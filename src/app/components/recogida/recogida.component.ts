@@ -1,15 +1,15 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Restaurant } from 'src/app/models/restaurant.model';
+import { Recogida } from 'src/app/models/recogida.model';
 
 @Component({
-  selector: 'app-restaurant',
-  templateUrl: './restaurant.component.html',
-  styleUrls: ['./restaurant.component.scss'],
+  selector: 'app-recogida',
+  templateUrl: './recogida.component.html',
+  styleUrls: ['./recogida.component.scss'],
 })
-export class RestaurantComponent implements OnInit {
+export class RecogidaComponent implements OnInit {
 
   fallbackImage = 'assets/imgs/1.jpg';
-  @Input() restaurant: Restaurant;
+  @Input() recogida: Recogida;
 
   constructor() { }
 

@@ -3,7 +3,7 @@ import { Address } from 'src/app/models/address.model';
 import { Category } from 'src/app/models/category.model';
 import { Item } from 'src/app/models/item.model';
 import { Order } from 'src/app/models/order.model';
-import { Restaurant } from 'src/app/models/restaurant.model';
+import { Recogida } from 'src/app/models/recogida.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { switchMap } from 'rxjs/operators';
 import firebase from 'firebase/compat/app';
@@ -20,9 +20,9 @@ export class ApiService {
   firestore = firebase.firestore();
   GeoFirestore = geofirestore.initializeApp(this.firestore);
 
-  restaurants: Restaurant[] = [];
-  allRestaurants: Restaurant[] = [];
-  restaurants1: Restaurant[] = [];  
+  recogidas: Recogida[] = [];
+  allRecogidas: Recogida[] = [];
+  recogidas1: Recogida[] = [];  
   categories: Category[] = [];
   allItems: Item[] = [];
   addresses: Address[] = [];
@@ -105,44 +105,44 @@ export class ApiService {
     }
   }
 
-  //  restaurant apis
-  async addRestaurant(data: any, uid) {
+  //  recogida apis
+  async addRecogida(data: any, uid) {
     try {
-      let restaurant = Object.assign({}, data);
-      delete restaurant.g;
-      delete restaurant.distance;
-      console.log(restaurant);
-      const response = await this.geoCollection('restaurants').doc(uid).set(restaurant);
+      let recogida = Object.assign({}, data);
+      delete recogida.g;
+      delete recogida.distance;
+      console.log(recogida);
+      const response = await this.geoCollection('recogidas').doc(uid).set(recogida);
       return response;
     } catch(e) {
       throw(e);
     }
   }
 
-  async getRestaurants() {
+  async getRecogidas() {
     try {
-      const restaurants = await this.collection('restaurants').get().pipe(
+      const recogidas = await this.collection('recogidas').get().pipe(
         switchMap(async(data: any) => {
-          let restaurantData = await data.docs.map(element => {
+          let recogidaData = await data.docs.map(element => {
             const item = element.data();
             return item;
           });
-          console.log(restaurantData);
-          return restaurantData;
+          console.log(recogidaData);
+          return recogidaData;
         })
       ).toPromise();
-      console.log(restaurants);
-      return restaurants;
+      console.log(recogidas);
+      return recogidas;
     } catch(e) {
       throw(e);
     }
   }
 
-  async getRestaurantById(id): Promise<any> {
+  async getRecogidaById(id): Promise<any> {
     try {
-      const restaurant = (await (this.collection('restaurants').doc(id).get().toPromise())).data();
-      console.log(restaurant);
-      return restaurant;
+      const recogida = (await (this.collection('recogidas').doc(id).get().toPromise())).data();
+      console.log(recogida);
+      return recogida;
     } catch(e) {
       throw(e);
     }
@@ -158,11 +158,11 @@ export class ApiService {
     }
   }
 
-  async getNearbyRestaurants(lat, lng): Promise<any> {
+  async getNearbyRecogidas(lat, lng): Promise<any> {
     try {
       const center = new firebase.firestore.GeoPoint(lat, lng);
       const radius = this.radius;
-      const data = await (await this.geoCollection('restaurants').near({ center, radius: this.radius })
+      const data = await (await this.geoCollection('recogidas').near({ center, radius: this.radius })
       .get()).docs.sort((a, b) => a.distance - b.distance).map(element => {
         let item: any = element.data();
         item.id = element.id;
@@ -176,7 +176,7 @@ export class ApiService {
   }
 
   // categories
-  async getRestaurantCategories(uid) {
+  async getRecogidaCategories(uid) {
     try {
       const categories = await this.collection(
         'categories',
@@ -221,7 +221,7 @@ export class ApiService {
       const id = this.randomString();
       const item = new Item(
         id,
-        data.restaurant_id,
+        data.recogida_id,
         this.firestore.collection('categories').doc(data.category_id),
         data.cover,
         data.name,
@@ -235,14 +235,14 @@ export class ApiService {
       let itemData = Object.assign({}, item);
       delete itemData.quantity;
       console.log(itemData);
-      const result = await this.collection('menu').doc(data.restaurant_id).collection('allItems').doc(id).set(itemData);
+      const result = await this.collection('menu').doc(data.recogida_id).collection('allItems').doc(id).set(itemData);
       return true;
     } catch(e) {
       throw(e);
     }
   }
 
-  async getRestaurantMenu(uid) {
+  async getRecogidaMenu(uid) {
     try {
       const itemsRef = await this.collection('menu').doc(uid)
           .collection('allItems', ref => ref.where('status', '==', true));

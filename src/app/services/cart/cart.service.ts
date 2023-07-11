@@ -5,7 +5,7 @@ import { Cart } from 'src/app/interfaces/cart.interface';
 // import { Cart } from 'src/app/models/cart.model';
 import { Item } from 'src/app/models/item.model';
 import { Order } from 'src/app/models/order.model';
-import { Restaurant } from 'src/app/models/restaurant.model';
+import { Recogida } from 'src/app/models/recogida.model';
 import { GlobalService } from '../global/global.service';
 import { StorageService } from '../storage/storage.service';
 
@@ -46,9 +46,9 @@ export class CartService {
   alertClearCart(index, items, data, order?) {
     this.global.showAlert(
       order ? 
-      'Would you like to reset your cart before re-ordering from this restaurant?' 
+      'Would you like to reset your cart before re-ordering from this recogida?' 
       : 
-      'Your cart contain items from a different restaurant. Would you like to reset your cart before browsing the restaurant?',
+      'Your cart contain items from a different recogida. Would you like to reset your cart before browsing the recogida?',
       'Items already in Cart',
       [
         {
@@ -79,7 +79,7 @@ export class CartService {
   async orderToCart(order: Order) {
     console.log('order: ', order);
     const data = {
-      restaurant: order.restaurant,
+      recogida: order.recogida,
       items: order.order
     };
     this.model = data;
@@ -87,19 +87,19 @@ export class CartService {
     this.saveCart();
     console.log('model: ', this.model);
     this._cart.next(this.model);
-    this.router.navigate(['/', 'tabs', 'restaurants', order.restaurant_id]);
+    this.router.navigate(['/', 'tabs', 'recogidas', order.recogida_id]);
   }
 
-  async quantityPlus(index, items?: Item[], restaurant?: Restaurant) {
+  async quantityPlus(index, items?: Item[], recogida?: Recogida) {
     try {
       if(items) {
         console.log('model: ', this.model);
         this.model.items = [...items];      
         if(this.model.from) this.model.from = '';
       }
-      if(restaurant) {
-        // this.model.restaurant = {}; 
-        this.model.restaurant = restaurant; 
+      if(recogida) {
+        // this.model.recogida = {}; 
+        this.model.recogida = recogida; 
       }
       console.log('q plus: ', this.model.items[index]);
       // this.model.items[index].quantity += 1;
@@ -201,29 +201,29 @@ export class CartService {
 
   async checkCart(lat1, lng1, radius) {
     let distance: number;
-    // if(this.model?.restaurant) {
+    // if(this.model?.recogida) {
     //   distance = this.getDistanceFromLatLngInKm(
     //     lat1, 
     //     lng1, 
-    //     this.model.restaurant.latitude, 
-    //     this.model.restaurant.longitude);
+    //     this.model.recogida.latitude, 
+    //     this.model.recogida.longitude);
     // } else {
     //   await this.getCartData(1);
-    //   if(this.model?.restaurant) {
+    //   if(this.model?.recogida) {
     //     distance = this.getDistanceFromLatLngInKm(
     //       lat1, 
     //       lng1, 
-    //       this.model.restaurant.latitude, 
-    //       this.model.restaurant.longitude);
+    //       this.model.recogida.latitude, 
+    //       this.model.recogida.longitude);
     //   }
     // }
     await this.getCartData(1);
-    if(this.model?.restaurant) {
+    if(this.model?.recogida) {
       distance = this.getDistanceFromLatLngInKm(
         lat1, 
         lng1, 
-        this.model.restaurant.g.geopoint.latitude, 
-        this.model.restaurant.g.geopoint.longitude
+        this.model.recogida.g.geopoint.latitude, 
+        this.model.recogida.g.geopoint.longitude
         );
         console.log('distance: ', distance);
         if(distance > radius) {

@@ -45,9 +45,9 @@ export class AllorderService {
             let item = element.data();
             item.id = element.id;
             item.order = JSON.parse(item.order);
-            item.restaurant.get()
+            item.recogida.get()
             .then(rData => {
-              item.restaurant = rData.data();
+              item.recogida = rData.data();
             })
             .catch(e => { throw(e); });
             return item;
@@ -71,15 +71,15 @@ export class AllorderService {
       let data = {...param};
       data.order = JSON.stringify(param.order);
       const uid = await this.getUid();
-      data.restaurant = await this.api.firestore.collection('restaurants').doc(param.restaurant_id);
+      data.recogida = await this.api.firestore.collection('recogidas').doc(param.recogida_id);
       const orderRef = await (await this.getOrderRef(uid)).add(data);
       const order_id = await orderRef.id;
       console.log('latest order: ', param);
       let currentOrders: Order[] = [];
       currentOrders.push(new Order(
         param.address,
-        param.restaurant,
-        param.restaurant_id,
+        param.recogida,
+        param.recogida_id,
         param.order,
         param.total,
         param.grandTotal,

@@ -14,19 +14,19 @@
     <ion-list lines="none">
 
       <ion-item>
-        <ion-label>Select Restaurant</ion-label>
+        <ion-label>Select Recogida</ion-label>
         <ion-select
-          (ionChange)="changeRestaurant($event)"
+          (ionChange)="changeRecogida($event)"
           interface="popover"
-          name="restaurant_id"
+          name="recogida_id"
           ngModel
-          #restaurant_id="ngModel"
+          #recogida_id="ngModel"
           required>
-          <ion-select-option *ngFor="let restaurant of restaurants" [value]="restaurant.uid">{{restaurant?.name}}</ion-select-option>
+          <ion-select-option *ngFor="let recogida of recogidas" [value]="recogida.uid">{{recogida?.name}}</ion-select-option>
         </ion-select>
       </ion-item>
-      <ion-text color="danger" *ngIf="!restaurant_id.valid && restaurant_id.touched" class="ion-text-center">
-        <p class="errorMsg">* Select Restaurant</p>
+      <ion-text color="danger" *ngIf="!recogida_id.valid && recogida_id.touched" class="ion-text-center">
+        <p class="errorMsg">* Select Recogida</p>
       </ion-text>
 
       <div *ngIf="categories?.length > 0">

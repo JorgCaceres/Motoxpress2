@@ -23,7 +23,7 @@ declare var google;
 })
 export class CartPage implements OnInit, OnDestroy {
 
-  @ViewChild(IonContent, {static: false}) content: IonContent;
+  @ViewChild(IonContent, { static: false }) content: IonContent;
 
   isModalOpen = false;
 
@@ -32,7 +32,7 @@ export class CartPage implements OnInit, OnDestroy {
   }
 
   usuario: any;
-  cantidad : number;
+  cantidad: number;
 
 
   urlCheck: any;
@@ -44,23 +44,25 @@ export class CartPage implements OnInit, OnDestroy {
   cartSub: Subscription;
   addressSub: Subscription;
   selectedLocation: string;
-  entrega :any = {}
+  entrega: any = {}
+  distancia_validacion: number;
 
   buscado: boolean = false;
-  boton_recarca: boolean = true;
+  boton_recarca: boolean = false;
   boton_iniciar: boolean = false;
+  input_entrega: boolean = false;
   direccionEntrega: string = '';
 
-    //VARIABLES PARA EL MAPA:
-    latitud: number;
-    longitud: number;
-    //VARIABLE MAP: variable a través de la cual se carga el mapa de google.
-    map: any;
-    marker: any;
-    search: any;
-    //NECESITAMOS 2 VARIABLES GLOBALES PARA CALCULAR Y MOSTRAR RUTA EN EL MAPA:
-    directionsService = new google.maps.DirectionsService();
-    directionsRenderer = new google.maps.DirectionsRenderer();
+  //VARIABLES PARA EL MAPA:
+  latitud: number;
+  longitud: number;
+  //VARIABLE MAP: variable a través de la cual se carga el mapa de google.
+  map: any;
+  marker: any;
+  search: any;
+  //NECESITAMOS 2 VARIABLES GLOBALES PARA CALCULAR Y MOSTRAR RUTA EN EL MAPA:
+  directionsService = new google.maps.DirectionsService();
+  directionsRenderer = new google.maps.DirectionsRenderer();
 
   constructor(
     private navCtrl: NavController,
@@ -73,18 +75,18 @@ export class CartPage implements OnInit, OnDestroy {
   ) { }
 
   async ngOnInit() {
-    
+
     await this.getData();
     this.addressSub = this.addressService.addressChange.subscribe(async (address) => {
       console.log('location cart: ', address);
       this.location = address;
-      if(this.location?.id && this.location?.id != '') {
+      if (this.location?.id && this.location?.id != '') {
         const radius = this.orderService.getRadius();
         const result = await this.cartService.checkCart(this.location.lat, this.location.lng, radius);
         console.log(result);
-        if(result) {
+        if (result) {
           this.global.errorToast(
-            'Your location is too far from the restaurant in the cart, kindly search from some other restaurant nearby.',
+            'Your location is too far from the recogida in the cart, kindly search from some other recogida nearby.',
             5000);
           this.cartService.clearCart();
         }
@@ -93,12 +95,11 @@ export class CartPage implements OnInit, OnDestroy {
     this.cartSub = this.cartService.cart.subscribe(cart => {
       console.log('cart page: ', cart);
       this.model = cart;
-      if(!this.model) this.location = {} as Address;
+      if (!this.model) this.location = {} as Address;
       console.log('cart page model: ', this.model);
     });
-
-    await this.cargarMapa();
-    this.autocompletado(this.map, this.marker);
+    console.log('GRAND TOTAL: ', this.model.grandTotal);
+    
 
   }
 
@@ -133,7 +134,7 @@ export class CartPage implements OnInit, OnDestroy {
   addAddress(location?) {
     let url: any;
     let navData: NavigationExtras;
-    if(location) {
+    if (location) {
       location.from = 'cart';
       navData = {
         queryParams: {
@@ -141,9 +142,10 @@ export class CartPage implements OnInit, OnDestroy {
         }
       }
     }
-    if(this.urlCheck == 'tabs') url = ['/', 'tabs', 'address', 'edit-address'];
+    if (this.urlCheck == 'tabs') url = ['/', 'tabs', 'address', 'edit-address'];
     else url = [this.router.url, 'address', 'edit-address'];
     this.router.navigate(url, navData);
+    this.boton_recarca = true;
   }
 
   async changeAddress() {
@@ -157,22 +159,23 @@ export class CartPage implements OnInit, OnDestroy {
         }
       };
       const address = await this.global.createModal(options);
-      if(address) {
-        if(address == 'add') this.addAddress();
+      if (address) {
+        if (address == 'add') this.addAddress();
         await this.addressService.changeAddress(address);
       }
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     }
+    this.boton_recarca = true;
   }
 
   async makePayment() {
     try {
       console.log('model: ', this.model);
       const data = {
-        restaurant_id: this.model.restaurant.uid,
+        recogida_id: this.model.recogida.uid,
         instruction: this.instruction ? this.instruction : '',
-        restaurant: this.model.restaurant,
+        recogida: this.model.recogida,
         order: this.model.items, //JSON.stringify(this.model.items)
         time: moment().format('lll'),
         address: this.location,
@@ -190,7 +193,7 @@ export class CartPage implements OnInit, OnDestroy {
       this.model = {} as Cart;
       this.global.successToast('Your Order is Placed Successfully');
       this.navCtrl.navigateRoot(['tabs/account']);
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     }
   }
@@ -201,78 +204,82 @@ export class CartPage implements OnInit, OnDestroy {
 
   ionViewWillLeave() {
     console.log('ionViewWillLeave CartPage');
-    if(this.model?.items && this.model?.items.length > 0) {
+    if (this.model?.items && this.model?.items.length > 0) {
       this.cartService.saveCart();
     }
   }
 
   ngOnDestroy() {
     console.log('Destroy CartPage');
-    if(this.addressSub) this.addressSub.unsubscribe();
-    if(this.cartSub) this.cartSub.unsubscribe();
+    if (this.addressSub) this.addressSub.unsubscribe();
+    if (this.cartSub) this.cartSub.unsubscribe();
   }
 
 
 
 
+
+
+
+
+  async cargarMapa() {
+    //obtengo latitud y longitud del navegador:
+    var geolocation = await this.obtenerUbicacion();
+    this.latitud = geolocation.coords.latitude;
+    this.longitud = geolocation.coords.longitude;
+
+    //mapa: toma el elemento div llamado map desde el HTML:
+    const mapa: HTMLElement = document.getElementById('map');
+
+    this.map = new google.maps.Map(mapa, {
+      center: { lat: this.location.lat,
+                lng: this.location.lng },
+      zoom: 14
+    });
+    this.directionsRenderer.setMap(this.map);
+    const indicacionesHTML: HTMLElement = document.getElementById('indicaciones');
+    this.directionsRenderer.setPanel(indicacionesHTML);
+
+    this.marker = new google.maps.Marker({
+      position: { lat: this.latitud, lng: this.longitud },
+      map: this.map,
+      title: 'Ubicacion inicial'
+    });
+  }
+
+  async recargarMapa() {
+    //obtengo latitud y longitud del navegador:
+    var geolocation = await this.obtenerUbicacion();
+    this.latitud = geolocation.coords.latitude;
+    this.longitud = geolocation.coords.longitude;
+
+    //mapa: toma el elemento div llamado map desde el HTML:
+    const mapa: HTMLElement = document.getElementById('map');
+
+    this.map = new google.maps.Map(mapa, {
+      center: { lat: this.location.lat, lng: this.location.lng },
+      zoom: 14
+    });
+    this.directionsRenderer.setMap(this.map);
+    const indicacionesHTML: HTMLElement = document.getElementById('indicaciones');
+    this.directionsRenderer.setPanel(indicacionesHTML);
+
+    this.marker = new google.maps.Marker({
+      position: { lat: this.location.lat, lng: this.location.lng },
+      map: this.map,
+      title: 'Ubicacion inicial'
+    });
+    this.boton_iniciar = true;
+    this.boton_recarca = false;
+    this.input_entrega = true;
+
+    // Ejecutar las funciones después de recargar el mapa
   
-
-
-
-  async cargarMapa(){
-    //obtengo latitud y longitud del navegador:
-    var geolocation = await this.obtenerUbicacion();
-    this.latitud = geolocation.coords.latitude;
-    this.longitud = geolocation.coords.longitude;
-
-    //mapa: toma el elemento div llamado map desde el HTML:
-    const mapa: HTMLElement = document.getElementById('map');
-
-    this.map = new google.maps.Map(mapa, {
-      center: {
-        lat: -33.598407852011846,
-        lng: -70.57909246040431
-      },
-      zoom: 14
-    });
-    this.directionsRenderer.setMap(this.map);
-    const indicacionesHTML: HTMLElement = document.getElementById('indicaciones');
-    this.directionsRenderer.setPanel(indicacionesHTML);
-
-    this.marker = new google.maps.Marker({
-      position: {lat: this.latitud, lng: this.longitud},
-      map: this.map,
-      title: 'Ubicacion inicial'
-    });
+    await this.cargarMapa();
+    this.autocompletado(this.map, this.marker);
   }
 
-  async recargarMapa(){
-    //obtengo latitud y longitud del navegador:
-    var geolocation = await this.obtenerUbicacion();
-    this.latitud = geolocation.coords.latitude;
-    this.longitud = geolocation.coords.longitude;
-
-    //mapa: toma el elemento div llamado map desde el HTML:
-    const mapa: HTMLElement = document.getElementById('map');
-
-    this.map = new google.maps.Map(mapa, {
-      center: {lat: this.location.lat, lng: this.location.lng},
-      zoom: 14
-    });
-    this.directionsRenderer.setMap(this.map);
-    const indicacionesHTML: HTMLElement = document.getElementById('indicaciones');
-    this.directionsRenderer.setPanel(indicacionesHTML);
-
-    this.marker = new google.maps.Marker({
-      position: {lat: this.location.lat, lng: this.location.lng},
-      map: this.map,
-      title: 'Ubicacion inicial'
-    });
-    this.boton_iniciar=true;
-    this.boton_recarca=false;
-  }
-
-  obtenerUbicacion(): Promise<any>{
+  obtenerUbicacion(): Promise<any> {
     return new Promise(
       (resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -280,30 +287,30 @@ export class CartPage implements OnInit, OnDestroy {
     );
   }
 
-  autocompletado(mapaLocal, marcadorLocal){
+  autocompletado(mapaLocal, marcadorLocal) {
     const input = document.getElementById('input-autocomplete');
     const autocomplete = new google.maps.places.Autocomplete(input);
 
     autocomplete.bindTo('bounds', this.map);
     this.search = autocomplete;
 
-    autocomplete.addListener('place_changed', function(){
+    autocomplete.addListener('place_changed', () => {
       var place = autocomplete.getPlace().geometry.location;
       mapaLocal.setCenter(place);
       mapaLocal.setZoom(15);
       marcadorLocal.setPosition(place);
       marcadorLocal.setMap(mapaLocal);
-
     });
-    
   }
+
+
 
   onInputChange(event: any) {
     this.direccionEntrega = event.target.value;
   }
 
   onInputChangePromise() {
-     return new Promise<void>(resolve => {
+    return new Promise<void>(resolve => {
       // Esperar un breve tiempo (por ejemplo, 500 ms) antes de resolver la Promesa
       setTimeout(() => {
         resolve();
@@ -315,23 +322,37 @@ export class CartPage implements OnInit, OnDestroy {
     // Esperar a que se realice el cambio en el input
     await this.onInputChangePromise();
     var place = this.search.getPlace().geometry.location;
-    
+
     var request = {
-      origin: {lat: this.location.lat, lng: this.location.lng},
+      origin: { lat: this.location.lat, lng: this.location.lng },
       destination: place,
       travelMode: google.maps.TravelMode.DRIVING
     };
 
     this.directionsService.route(request, (resultado, status) => {
       this.directionsRenderer.setDirections(resultado);
+      if (status === google.maps.DirectionsStatus.OK) {
+        var distancia = google.maps.geometry.spherical.computeDistanceBetween(
+          resultado.routes[0].legs[0].start_location,
+          resultado.routes[0].legs[0].end_location
+        );
+        var distanciaEntera = parseInt(distancia);
+        this.distancia_validacion = distanciaEntera
+        this.distancia_validacion = this.distancia_validacion * 0.5
+        this.model.grandTotal = this.model.grandTotal + this.distancia_validacion
+        console.log('Distancia VALIDACION:', this.distancia_validacion);
+      } else {
+        console.error('Error al calcular la ruta:', status);
+      }
+
     });
     this.marker.setPosition(null);
-    
+
     this.entrega.lugar = this.direccionEntrega
     this.entrega.lat = place.lat();
     this.entrega.lng = place.lng();
 
-    console.log('Entrega: ',this.entrega)
+    console.log('Entrega: ', this.entrega)
 
     this.buscado = true;
   }

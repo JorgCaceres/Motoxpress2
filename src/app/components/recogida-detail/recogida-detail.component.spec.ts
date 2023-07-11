@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { LoadingRestaurantComponent } from './loading-restaurant.component';
+import { RecogidaDetailComponent } from './recogida-detail.component';
 
-describe('LoadingRestaurantComponent', () => {
-  let component: LoadingRestaurantComponent;
-  let fixture: ComponentFixture<LoadingRestaurantComponent>;
+describe('RecogidaDetailComponent', () => {
+  let component: RecogidaDetailComponent;
+  let fixture: ComponentFixture<RecogidaDetailComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LoadingRestaurantComponent ],
+      declarations: [ RecogidaDetailComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LoadingRestaurantComponent);
+    fixture = TestBed.createComponent(RecogidaDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

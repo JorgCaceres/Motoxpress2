@@ -59,12 +59,26 @@ ion-content{
         --ion-background-color: transparent;
         --opacity: 0;
     }
+
+    h3{
+        font-size: 100%;
+        padding-left: 1.8rem;
+    }
+    input{
+        width: 80%;
+        height: 1.8rem;
+        border-radius: 9px;
+        padding-left: -2rem;
+        margin-left: -2rem;
+    }
+    
+    p{
+        font-size: 90%;
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
 }
 #ruta{
     text-align: center;
 }
 
-h3{
-    font-size: 95%;
-    padding-left: 1rem;
-}

@@ -3,7 +3,7 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { NgForm } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { Category } from 'src/app/models/category.model';
-import { Restaurant } from 'src/app/models/restaurant.model';
+import { Recogida } from 'src/app/models/recogida.model';
 import { ApiService } from 'src/app/services/api/api.service';
 import { GlobalService } from 'src/app/services/global/global.service';
 
@@ -15,7 +15,7 @@ import { GlobalService } from 'src/app/services/global/global.service';
 export class AddMenuItemPage implements OnInit {
 
   @ViewChild('filePicker', {static: false}) filePickerRef: ElementRef;
-  restaurants: Restaurant[] = [];
+  recogidas: Recogida[] = [];
   categories: Category[] = [];
   image: any;
   isLoading: boolean = false;
@@ -31,13 +31,13 @@ export class AddMenuItemPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getRestaurants();
+    this.getRecogidas();
   }
 
-  async getRestaurants() {
+  async getRecogidas() {
     try {
       this.global.showLoader();
-      this.restaurants = await this.apiService.getRestaurants();
+      this.recogidas = await this.apiService.getRecogidas();
       this.global.hideLoader();
     } catch(e) {
       console.log(e);
@@ -46,11 +46,11 @@ export class AddMenuItemPage implements OnInit {
     }
   }
 
-  async changeRestaurant(event) {
+  async changeRecogida(event) {
     try {
       console.log(event);
       this.global.showLoader();
-      this.categories = await this.apiService.getRestaurantCategories(event.detail.value);
+      this.categories = await this.apiService.getRecogidaCategories(event.detail.value);
       this.category = '';
       this.global.hideLoader();
     } catch(e) {

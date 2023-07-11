@@ -8,14 +8,14 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { GlobalService } from 'src/app/services/global/global.service';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
-import { Restaurant } from 'src/app/models/restaurant.model';
+import { Recogida } from 'src/app/models/recogida.model';
 
 @Component({
-  selector: 'app-add-restaurant',
-  templateUrl: './add-restaurant.page.html',
-  styleUrls: ['./add-restaurant.page.scss'],
+  selector: 'app-add-recogida',
+  templateUrl: './add-recogida.page.html',
+  styleUrls: ['./add-recogida.page.scss'],
 })
-export class AddRestaurantPage implements OnInit {
+export class AddRecogidaPage implements OnInit {
 
   isLoading: boolean = false;
   coverImage: any;
@@ -90,7 +90,7 @@ export class AddRestaurantPage implements OnInit {
     const mimeType = files[0].type;
     if(mimeType.match(/image\/*/) == null) return;
     const file = files[0];
-    const filePath = 'restaurants/' + Date.now() + '_' + file.name;
+    const filePath = 'recogidas/' + Date.now() + '_' + file.name;
     const fileRef = this.afStorage.ref(filePath);
     const task = this.afStorage.upload(filePath, file);
     task.snapshotChanges()
@@ -116,18 +116,18 @@ export class AddRestaurantPage implements OnInit {
       this.global.errorToast('Please select a cover image');
       return;
     }
-    if(this.location && this.location?.lat) this.addRestaurant(form);
-    else this.global.errorToast('Please select address for this restaurant');
+    if(this.location && this.location?.lat) this.addRecogida(form);
+    else this.global.errorToast('Please select address for this recogida');
   }
 
-  async addRestaurant(form: NgForm) {
+  async addRecogida(form: NgForm) {
     try {
       this.isLoading = true;
       console.log(form.value);
-      const data = await this.authService.register(form.value, 'restaurant');
+      const data = await this.authService.register(form.value, 'recogida');
       if(data?.id) {
         const position = new firebase.firestore.GeoPoint(this.location.lat, this.location.lng);
-        const restaurant = new Restaurant(
+        const recogida = new Recogida(
           data.id,
           this.coverImage ? this.coverImage : '',
           form.value.res_name,
@@ -148,19 +148,19 @@ export class AddRestaurantPage implements OnInit {
           0,
           position
         );
-        const result = await this.apiService.addRestaurant(restaurant, data.id);
+        const result = await this.apiService.addRecogida(recogida, data.id);
         console.log(result);
         await this.apiService.addCategories(this.categories, data.id);
         // form.reset();
-        this.global.successToast('Restaurant Added Successfully');
+        this.global.successToast('Recogida Added Successfully');
       } else {
-        this.global.showAlert('Restaurant Registration failed');
+        this.global.showAlert('Recogida Registration failed');
       }
       this.isLoading = false;       
     } catch(e) {
       console.log(e);
       this.isLoading = false;
-      let msg: string = 'Could not register the restaurant, please try again.';
+      let msg: string = 'Could not register the recogida, please try again.';
       if(e.code == 'auth/email-already-in-use') {
         msg = e.message;
       }

@@ -1,9 +1,9 @@
 import { Address } from "../models/address.model";
 import { Item } from "../models/item.model";
-import { Restaurant } from "../models/restaurant.model";
+import { Recogida } from "../models/recogida.model";
 
 export interface Cart {
-    restaurant: Restaurant;
+    recogida: Recogida;
     items: Item[];
     totalItem?: number;
     totalPrice?: number;
@@ -11,5 +11,5 @@ export interface Cart {
     location?: Address;
     deliveryCharge?: number;
     from?: string;
-    recogida?: Address;
+    recogida_id?: Address;
 }

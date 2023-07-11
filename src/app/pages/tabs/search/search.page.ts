@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { combineLatest, Observable, Subject, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { Restaurant } from 'src/app/models/restaurant.model';
+import { Recogida } from 'src/app/models/recogida.model';
 // import { AddressService } from 'src/app/services/address/address.service';
 import { ApiService } from 'src/app/services/api/api.service';
 import { GlobalService } from 'src/app/services/global/global.service';
@@ -16,11 +16,11 @@ export class SearchPage implements OnInit, OnDestroy {
   @ViewChild('searchInput') sInput;
   model: any = {
     icon: 'search-outline',
-    title: 'No Restaurants Found'
+    title: 'No Recogidas Found'
   };
   isLoading: boolean;
   query: any;
-  restaurants: Restaurant[] = [];
+  recogidas: Recogida[] = [];
 
   startAt = new Subject();
   endAt = new Subject();
@@ -62,11 +62,11 @@ export class SearchPage implements OnInit, OnDestroy {
 
   queryResults(start, end) {
     this.isLoading = true;
-    this.api.collection('restaurants', ref => ref.orderBy('short_name').startAt(start).endAt(end))
+    this.api.collection('recogidas', ref => ref.orderBy('short_name').startAt(start).endAt(end))
       .valueChanges()
       .pipe(take(1))
       .subscribe((data: any) => {
-        this.restaurants = data;
+        this.recogidas = data;
         this.isLoading = false;
       }, e => {
         this.isLoading = false;
@@ -82,7 +82,7 @@ export class SearchPage implements OnInit, OnDestroy {
   }
 
   querySearch() {
-    this.restaurants = [];
+    this.recogidas = [];
     if(this.query.length > 0) {
       this.startAt.next(this.query);
       // it is a PUA code, used to match query that start with querytext

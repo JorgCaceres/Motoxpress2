@@ -41,7 +41,7 @@ const routes: Routes = [
     loadChildren: () => import('./geo/geo.module').then( m => m.GeoPageModule)
   },
   {
-    path: 'restaurants/:restaurantId',
+    path: 'recogidas/:recogidaId',
     loadChildren: () => import('./items/items.module').then( m => m.ItemsPageModule)
   },
   {

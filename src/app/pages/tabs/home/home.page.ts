@@ -4,7 +4,7 @@ import { NavigationExtras, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SearchLocationComponent } from 'src/app/components/search-location/search-location.component';
 import { Address } from 'src/app/models/address.model';
-import { Restaurant } from 'src/app/models/restaurant.model';
+import { Recogida } from 'src/app/models/recogida.model';
 import { AddressService } from 'src/app/services/address/address.service';
 import { ApiService } from 'src/app/services/api/api.service';
 import { GlobalService } from 'src/app/services/global/global.service';
@@ -19,7 +19,7 @@ import { LocationService } from 'src/app/services/location/location.service';
 export class HomePage implements OnInit, OnDestroy {
 
   banners: Banner[] = [];
-  restaurants: Restaurant[] = [];
+  recogidas: Recogida[] = [];
   isLoading: boolean = false;
   location = {} as Address;
   addressSub: Subscription;
@@ -54,7 +54,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.isLoading = true;
     this.getBanners();
     if(!this.location?.lat) {
-      this.getNearbyRestaurants();
+      this.getNearbyRecogidas();
     }   
   }
 
@@ -71,8 +71,8 @@ export class HomePage implements OnInit, OnDestroy {
   async nearbyApiCall() {
     try {
       console.log(this.location);
-      this.restaurants = await this.api.getNearbyRestaurants(this.location.lat, this.location.lng);
-      console.log(this.restaurants);
+      this.recogidas = await this.api.getNearbyRecogidas(this.location.lat, this.location.lng);
+      console.log(this.recogidas);
       this.isLoading = false;
     } catch(e) {
       // set isLoading to false
@@ -81,10 +81,10 @@ export class HomePage implements OnInit, OnDestroy {
     }
   }
 
-  async getNearbyRestaurants() {
+  async getNearbyRecogidas() {
     try {
       const position = await this.locationService.getCurrentLocation();
-      console.log('get nearby restaurants', position);
+      console.log('get nearby recogidas', position);
       const { latitude, longitude } = position.coords;
       const address = await this.mapService.getAddress(latitude, longitude);
       if(address) {
@@ -99,7 +99,7 @@ export class HomePage implements OnInit, OnDestroy {
         );
         await this.getData();
       }
-      console.log('restaurants: ', this.restaurants);
+      console.log('recogidas: ', this.recogidas);
       this.isLoading = false;
     } catch(e) {
       console.log(e);
@@ -110,7 +110,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   async getData() {
     try {
-      this.restaurants = [];
+      this.recogidas = [];
       await this.addressService.checkExistAddress(this.location);
     } catch(e) {
       console.log(e);

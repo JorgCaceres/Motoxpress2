@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AddRestaurantPageRoutingModule } from './add-restaurant-routing.module';
+import { AddRecogidaPageRoutingModule } from './add-recogida-routing.module';
 
-import { AddRestaurantPage } from './add-restaurant.page';
+import { AddRecogidaPage } from './add-recogida.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({
@@ -14,9 +14,9 @@ import { ComponentsModule } from 'src/app/components/components.module';
     CommonModule,
     FormsModule,
     IonicModule,
-    AddRestaurantPageRoutingModule,
+    AddRecogidaPageRoutingModule,
     ComponentsModule
   ],
-  declarations: [AddRestaurantPage]
+  declarations: [AddRecogidaPage]
 })
-export class AddRestaurantPageModule {}
+export class AddRecogidaPageModule {}

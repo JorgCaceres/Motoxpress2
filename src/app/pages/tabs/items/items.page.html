@@ -9,7 +9,7 @@
 
 <ion-content>
 
-  <app-restaurant-detail [data]="data" [isLoading]="isLoading"></app-restaurant-detail>
+  <app-recogida-detail [data]="data" [isLoading]="isLoading"></app-recogida-detail>
 
   <ion-row class="ion-padding veg borderBottomSmall">
     <ion-label>
@@ -18,7 +18,7 @@
     <ion-toggle mode="md" color="success"(ionChange)="vegOnly($event)" [(ngModel)]="veg"></ion-toggle>
   </ion-row>
 
-  <app-loading-restaurant *ngIf="isLoading"></app-loading-restaurant>
+  <app-loading-recogida *ngIf="isLoading"></app-loading-recogida>
   <app-empty-screen [model]="model" *ngIf="!isLoading && categories?.length == 0"></app-empty-screen>
 
   <ion-list lines="none" *ngFor="let category of categories">
