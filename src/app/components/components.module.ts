@@ -6,6 +6,7 @@ import { EmptyScreenComponent } from './empty-screen/empty-screen.component';
 import { SearchLocationComponent } from './search-location/search-location.component';
 import { OrdenEncursoComponent } from './orden-encurso/orden-encurso.component';
 import { RecogidaComponent } from './recogida/recogida.component';
+import { HistorialComponent } from './historial/historial.component';
 
 
 
@@ -15,7 +16,8 @@ import { RecogidaComponent } from './recogida/recogida.component';
     LoadingRecogidaComponent,
     EmptyScreenComponent,
     SearchLocationComponent,
-    OrdenEncursoComponent
+    OrdenEncursoComponent,
+    HistorialComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +28,8 @@ import { RecogidaComponent } from './recogida/recogida.component';
     LoadingRecogidaComponent,
     EmptyScreenComponent,
     SearchLocationComponent,
-    OrdenEncursoComponent
+    OrdenEncursoComponent,
+    HistorialComponent
   ],
 })
 export class ComponentsModule { }

@@ -71,7 +71,7 @@
 
 <ion-footer *ngIf="model?.recogida">
   <ion-toolbar>
-    <ion-row *ngIf="!location?.lat">
+    <ion-row *ngIf="!boton_recarca && !input_entrega">
       <ion-col size="6">
         <ion-button expand="block" fill="outline" color="success" (click)="addAddress()">
           AÑADIR DIRECCION

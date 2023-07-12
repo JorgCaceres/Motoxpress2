@@ -21,26 +21,26 @@ export class GoogleMapsService {
     return this._markerChange.asObservable();
   }
 
-  constructor(private http: HttpClient, private zone: NgZone) {}
+  constructor(private http: HttpClient, private zone: NgZone) { }
 
   loadGoogleMaps(): Promise<any> {
     const win = window as any;
     const gModule = win.google;
-    if(gModule && gModule.maps) {
-     return Promise.resolve(gModule.maps);
+    if (gModule && gModule.maps) {
+      return Promise.resolve(gModule.maps);
     }
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
       script.src =
         'https://maps.googleapis.com/maps/api/js?key=' +
         environment.googleMapsApiKey
-         + '&libraries=places';
+        + '&libraries=places';
       script.async = true;
       script.defer = true;
       document.body.appendChild(script);
       script.onload = () => {
         const loadedGoogleModule = win.google;
-        if(loadedGoogleModule && loadedGoogleModule.maps) {
+        if (loadedGoogleModule && loadedGoogleModule.maps) {
           resolve(loadedGoogleModule.maps);
         } else {
           reject('Google Map SDK is not Available');
@@ -53,10 +53,10 @@ export class GoogleMapsService {
     return new Promise((resolve, reject) => {
       this.http.get<any>(
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${environment.googleMapsApiKey}`
-        )
+      )
         .pipe(
           map(geoData => {
-            if(!geoData || !geoData.results || geoData.results.length === 0) throw(null);
+            if (!geoData || !geoData.results || geoData.results.length === 0) throw (null);
             return geoData.results[0];
           })
         ).subscribe(data => {
@@ -69,7 +69,7 @@ export class GoogleMapsService {
 
   async getPlaces(query) {
     try {
-      if(!this.googleMaps) {
+      if (!this.googleMaps) {
         this.googleMaps = await this.loadGoogleMaps();
       }
       let googleMaps: any = this.googleMaps;
@@ -78,13 +78,13 @@ export class GoogleMapsService {
       service.getPlacePredictions({
         input: query,
         componentRestrictions: {
-          country: 'IN'
+          country: 'CL'
         }
       }, (predictions) => {
         let autoCompleteItems = [];
         this.zone.run(() => {
-          if(predictions != null) {
-            predictions.forEach(async(prediction) => {
+          if (predictions != null) {
+            predictions.forEach(async (prediction) => {
               console.log('prediction: ', prediction);
               let latLng: any = await this.geoCode(prediction.description, googleMaps);
               const places = {
@@ -101,16 +101,16 @@ export class GoogleMapsService {
           }
         });
       });
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     }
   }
 
   geoCode(address, googleMaps) {
-    let latlng = {lat: '', lng: ''};
+    let latlng = { lat: '', lng: '' };
     return new Promise((resolve, reject) => {
       let geocoder = new googleMaps.Geocoder();
-      geocoder.geocode({'address' : address}, (results) => {
+      geocoder.geocode({ 'address': address }, (results) => {
         console.log('results: ', results);
         latlng.lat = results[0].geometry.location.lat();
         latlng.lng = results[0].geometry.location.lng();

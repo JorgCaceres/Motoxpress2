@@ -75,6 +75,7 @@ export class AuthService {
         type ? type : 'user',
         'active', 
         'cliente',
+        false
       );
       await this.apiService.collection('users').doc(registeredUser.user.uid).set(Object.assign({}, data));
       if(!type || type != 'recogida') {

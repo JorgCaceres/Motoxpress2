@@ -18,10 +18,15 @@ const routes: Routes = [
         loadChildren: () => import('./ver-ordenes/ver-ordenes.module').then( m => m.VerOrdenesPageModule)
       },
       {
+        path: 'historial-ordenes',
+        loadChildren: () => import('./historial-ordenes/historial-ordenes.module').then( m => m.HistorialOrdenesPageModule)
+      },    
+      {
         path: '',
         redirectTo: '/admin/admin-cruds',
         pathMatch: 'full'
       },
+
     ]
   },
   {
@@ -48,7 +53,8 @@ const routes: Routes = [
       {
         path: 'add-moto',
         loadChildren: () => import('./add-moto/add-moto.module').then( m => m.AddMotoPageModule)
-      }
+      },
+
 
 ];
 // const routes: Routes = [
