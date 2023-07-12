@@ -20,14 +20,6 @@ export class HistorialComponent  implements OnInit {
     this.getOrdenes()
   }
 
-  reorderItem() {
-    this.reorder.emit(this.order);
-  }
-
-  getHelp() {
-    this.help.emit(this.order);
-  }
-
 
 
   async getOrdenes() {

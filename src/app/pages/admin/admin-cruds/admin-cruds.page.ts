@@ -29,7 +29,7 @@ export class AdminCrudsPage implements OnInit {
     .catch(e => {
       console.log(e);
       this.global.hideLoader();
-      this.global.errorToast('Logout Failed! Check your internet connection');
+      this.global.errorToast('Cierre de sesión fallido, verifica tu direccion a internet');
     });
   }
 

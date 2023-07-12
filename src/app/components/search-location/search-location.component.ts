@@ -91,7 +91,7 @@ export class SearchLocationComponent implements OnInit, OnDestroy {
     } catch(e) {
       console.log(e);
       this.global.hideLoader();
-      this.global.errorToast('Check whether GPS is enabled & the App has its permissions', 5000);
+      this.global.errorToast('El GPS y la App deben tener permisos', 5000);
     }
   }
 

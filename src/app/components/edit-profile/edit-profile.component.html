@@ -1,6 +1,6 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title color="dark">EDIT ACCOUNT</ion-title>
+    <ion-title color="dark">EDITAR PERFIL</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -9,12 +9,12 @@
     <ion-list class="ion-padding-horizontal ion-margin-bottom">
 
       <ion-item class="ion-margin-vertical">
-        <ion-label position="floating">PHONE NUMBER</ion-label>
+        <ion-label position="floating">TELÉFONO</ion-label>
         <ion-input 
           #phoneInput
           type="tel" 
-          minlength="10" 
-          maxlength="10"
+          minlength="9" 
+          maxlength="9"
           required
           name="phone"
           [ngModel]="profile?.phone"
@@ -24,7 +24,7 @@
       </ion-item>
 
       <ion-item>
-        <ion-label position="floating">EMAIL ADDRESS</ion-label>
+        <ion-label position="floating">CORREO ELECTRONICO</ion-label>
         <ion-input 
         type="email"
         required

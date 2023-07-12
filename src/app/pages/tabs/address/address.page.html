@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title><ion-label color="dark">MANAGE ADDRESSES</ion-label></ion-title>
+    <ion-title><ion-label color="dark">ADMINISTRAR DIRECCIONES</ion-label></ion-title>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/account"></ion-back-button>
     </ion-buttons>
@@ -16,7 +16,7 @@
   <app-empty-screen *ngIf="!isLoading && addresses?.length == 0" [model]="model"></app-empty-screen>
 
   <ion-list *ngIf="!isLoading && addresses?.length > 0">
-    <ion-item-divider>SAVED ADDRESSES</ion-item-divider>
+    <ion-item-divider>DIRECCIONES GUARDADAS</ion-item-divider>
     <ion-item-group class="ion-padding">
       <ion-item lines="full" class="ion-no-padding" *ngFor="let address of addresses">
         <ion-icon [name]="getIcon(address?.title)" color="medium" slot="start"></ion-icon>
@@ -28,8 +28,8 @@
             </p>
           </ion-text>
           <ion-row>
-            <ion-button fill="clear" color="primary" (click)="editAddress(address)">EDIT</ion-button>
-            <ion-button fill="clear" color="primary" (click)="deleteAddress(address)">DELETE</ion-button>
+            <ion-button fill="clear" color="primary" (click)="editAddress(address)">EDITAR</ion-button>
+            <ion-button fill="clear" color="primary" (click)="deleteAddress(address)">ELIMINAR</ion-button>
           </ion-row>
         </ion-label>
       </ion-item>
@@ -43,7 +43,7 @@
     <ion-button 
       [routerLink]="['/', 'tabs', 'address', 'edit-address']" 
       fill="outline" color="success" expand="block" class="ion-margin-horizontal">
-      ADD NEW ADDRESS
+      AGREGAR NUEVA DIRECCIÓN
     </ion-button>
   </ion-toolbar>
 </ion-footer>

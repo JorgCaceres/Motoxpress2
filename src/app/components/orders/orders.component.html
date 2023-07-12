@@ -5,7 +5,7 @@
       <p>{{order?.recogida?.address}}</p>
       <ion-text>
         <p>
-          ₹{{order?.grandTotal}}
+          ${{order?.grandTotal}}
           <ion-icon name="chevron-forward-outline"></ion-icon>
         </p>
       </ion-text>
@@ -24,9 +24,6 @@
       <ion-row>
         <ion-col size="6">
           <ion-button fill="outline" expand="block" color="primary" (click)="reorderItem()">REORDER</ion-button>
-        </ion-col>
-        <ion-col size="6">
-          <ion-button fill="outline" expand="block" color="dark" (click)="getHelp()">GET HELP</ion-button>
         </ion-col>
       </ion-row>
     </ion-label>

@@ -69,7 +69,7 @@ export class AddMenuItemPage implements OnInit {
       console.log(url);      
       if(!url) {
         this.isLoading = false;
-        this.global.errorToast('Image not uploaded, please try again');
+        this.global.errorToast('No se pudo cargar la imagen, intenta otra vez');
         return;
       }
       const data = {
@@ -81,7 +81,7 @@ export class AddMenuItemPage implements OnInit {
       console.log('data: ', data);      
       await this.apiService.addMenuItem(data);
       this.isLoading = false;
-      this.global.successToast('Menu Item Added Successfully');
+      this.global.successToast('Menu de entrega agregado correctamente');
     } catch(e) {
       console.log(e);
       this.isLoading = false;

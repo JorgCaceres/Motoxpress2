@@ -39,7 +39,7 @@ export class SignupPage implements OnInit {
     .catch(e => {
       console.log(e);
       this.isLoading = false;
-      let msg: string = 'Could not sign you up, please try again.';
+      let msg: string = 'No se ha podido registrar, porfavor reintenta nuevamente.';
       if(e.code == 'auth/email-already-in-use') {
         msg = e.message;
       }

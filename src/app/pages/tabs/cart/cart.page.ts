@@ -86,7 +86,7 @@ export class CartPage implements OnInit, OnDestroy {
         console.log(result);
         if (result) {
           this.global.errorToast(
-            'Your location is too far from the recogida in the cart, kindly search from some other recogida nearby.',
+            'Tu ubicacion esta muy lejos del sector de recogida, intenta buscando uno mas cercano.',
             5000);
           this.cartService.clearCart();
         }
@@ -191,7 +191,7 @@ export class CartPage implements OnInit, OnDestroy {
       // clear cart
       await this.cartService.clearCart();
       this.model = {} as Cart;
-      this.global.successToast('Your Order is Placed Successfully');
+      this.global.successToast('Tu orden se ha realizado con exito!');
       this.navCtrl.navigateRoot(['tabs/account']);
     } catch (e) {
       console.log(e);

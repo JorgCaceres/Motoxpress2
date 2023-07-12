@@ -64,13 +64,13 @@ export class AccountPage implements OnInit, OnDestroy {
 
   confirmLogout() {
     this.global.showAlert(
-      'Are you sure you want to sign-out?',
-      'Confirm',
+      'Estás seguro que quieres cerrar sesión?',
+      'Cerrar Sesión',
       [{
         text: 'No',
         role: 'cancel'
       }, {
-        text: 'Yes',
+        text: 'Confirmar',
         handler: () => {
           this.logout();
         }
@@ -87,7 +87,7 @@ export class AccountPage implements OnInit, OnDestroy {
     .catch(e => {
       console.log(e);
       this.global.hideLoader();
-      this.global.errorToast('Logout Failed! Check your internet connection');
+      this.global.errorToast('No se ha podido cerrar sesión, reintenta');
     });
   }
 

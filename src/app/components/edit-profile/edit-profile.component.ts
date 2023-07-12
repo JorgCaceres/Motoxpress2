@@ -48,10 +48,10 @@ export class EditProfileComponent implements OnInit {
 
   presentPasswordPrompt(data) {
     this.global.showAlert(
-      'Please enter your password to change YOur Email Address', 
-      'Verify',
+      'Ingresa tu contraseña para cambiar la direccion de correo electronico', 
+      'Verificando',
       [{
-        text: 'Cancel',
+        text: 'Cancelar',
         role: 'cancel',
         handler: () => {
           console.log('Confirm Cancel');
@@ -63,14 +63,14 @@ export class EditProfileComponent implements OnInit {
           if(inputData.password.trim() != '' && inputData.password.length >= 8) {
             this.updateEmail(data, inputData.password);
           } else {
-            this.global.errorToast('Password must be of atleast 8 characters');
+            this.global.errorToast('La contraseña debe tener al menos 8 caracteres.');
           }
         }
       }],
       [{
         name: 'password',
         type: 'password',
-        placeholder: 'Enter Password',        
+        placeholder: 'Ingresa contraseña',       
       }]
       );
   }
@@ -81,7 +81,7 @@ export class EditProfileComponent implements OnInit {
       this.global.modalDismiss();
     } catch(e) {
       console.log(e);
-      let msg: any = 'No Internet Connection';
+      let msg: any = 'No hay conexión a internet';
       if(e.code == 'auth/email-already-in-use' || e.code == 'auth/wrong-password') {
         msg = e.message;
       }

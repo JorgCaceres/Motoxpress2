@@ -16,7 +16,7 @@ export class AddressPage implements OnInit, OnDestroy {
   addresses: Address[] = [];
   addressesSub: Subscription;
   model = {
-    title: 'No Addresses added yet',
+    title: 'No hay direcciones agregadas aún',
     icon: 'location-outline'
   };
 
@@ -27,7 +27,7 @@ export class AddressPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.addressesSub = this.addressService.addresses.subscribe(address => {
-      console.log('addresses: ', address);
+      console.log('direcciones: ', address);
       this.addresses = address;      
     });
     this.getAddresses();
@@ -59,10 +59,10 @@ export class AddressPage implements OnInit, OnDestroy {
   }
 
   deleteAddress(address) {
-    console.log('address: ', address);
+    console.log('direccion: ', address);
     this.global.showAlert(
-      'Are you sure you want to delete this address?',
-      'Confirm',
+      'Estas seguro que deseas eliminar esta direccion?',
+      'Confirmar',
       [
         {
           text: 'No',
@@ -73,7 +73,7 @@ export class AddressPage implements OnInit, OnDestroy {
           }
         },
         {
-          text: 'Yes',
+          text: 'Aceptar',
           handler: async () => {
             this.global.showLoader();
             await this.addressService.deleteAddress(address);

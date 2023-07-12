@@ -13,12 +13,12 @@
       <ion-icon name="star"></ion-icon>
       {{recogida?.rating}} .
     </span>
-    {{recogida?.delivery_time}} mins . ₹{{recogida?.price}} for two
+    {{recogida?.delivery_time}} mins . ${{recogida?.price}} pesos
     <ion-text color="tertiary" *ngIf="recogida?.distance && recogida?.distance != 0">
-      <p class="distance">{{recogida?.distance | number: '0.0-2'}} kms away</p>
+      <p class="distance">{{recogida?.distance | number: '0.0-2'}} kms</p>
     </ion-text>
     <ion-text color="tertiary" *ngIf="recogida?.distance == 0">
-      <p class="distance">Few steps away</p>
+      <p class="distance">A poca distancia</p>
     </ion-text>
   </ion-label>
 </ion-item>

@@ -20,8 +20,4 @@ export class OrdersComponent implements OnInit {
     this.reorder.emit(this.order);
   }
 
-  getHelp() {
-    this.help.emit(this.order);
-  }
-
 }

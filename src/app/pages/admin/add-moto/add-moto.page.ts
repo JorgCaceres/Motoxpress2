@@ -56,7 +56,7 @@ export class AddMotoPage implements OnInit {
     .catch(e => {
       console.log(e);
       this.isLoading = false;
-      let msg: string = 'Could not sign you up, please try again.';
+      let msg: string = 'Error al ingresar, intenta nuevamente';
       if(e.code == 'auth/email-already-in-use') {
         msg = e.message;
       }

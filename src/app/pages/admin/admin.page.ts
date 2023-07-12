@@ -27,7 +27,7 @@ export class AdminPage implements OnInit {
     .catch(e => {
       console.log(e);
       this.global.hideLoader();
-      this.global.errorToast('Logout Failed! Check your internet connection');
+      this.global.errorToast('Cerrar sesión fallido! revisa tu conexión a internet');
     });
   }
 

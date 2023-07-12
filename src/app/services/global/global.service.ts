@@ -22,10 +22,10 @@ export class GlobalService {
 
   showAlert(message: string, header?, buttonArray?, inputs?) {
     this.alertCtrl.create({
-      header: header ? header : 'Authentication failed',
+      header: header ? header : 'Error en la autenticación',
       message: message,
       inputs: inputs ? inputs : [],
-      buttons: buttonArray ? buttonArray : ['Okay']
+      buttons: buttonArray ? buttonArray : ['Ok']
     })
     .then(alertEl => alertEl.present());
   }
@@ -41,7 +41,7 @@ export class GlobalService {
   }
 
   errorToast(msg?, duration = 4000) {
-    this.showToast(msg ? msg : 'No Internet Connection', 'danger', 'bottom', duration);
+    this.showToast(msg ? msg : 'No hay conexion a internet', 'danger', 'bottom', duration);
   }
 
   successToast(msg) {
@@ -58,13 +58,13 @@ export class GlobalService {
       res.present().then(() => {
         if(!this.isLoading) {
           res.dismiss().then(() => {
-            console.log('abort presenting');
+            console.log('no se pudo mostrar');
           });
         }
       })
     })
     .catch(e => {
-      console.log('show loading error: ', e);
+      console.log('mostrando cargando error: ', e);
     });
   }
 

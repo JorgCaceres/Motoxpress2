@@ -38,7 +38,7 @@ export class EditAddressPage implements OnInit {
 
   async checkForUpdate() {
     this.isLoading = true;
-    this.location.title = 'Locating...';
+    this.location.title = 'LOCALIZANDO...';
     this.isLocationFetched = false;
     // this.route.queryParams.subscribe(async(data) => {});
     const data = this.route.snapshot.queryParams;
@@ -93,7 +93,7 @@ export class EditAddressPage implements OnInit {
 
   fetchLocation(event) {
     this.location = event;
-    console.log('location: ', this.location);
+    console.log('Ubicacion: ', this.location);
     this.isLocationFetched = true;
   }
   

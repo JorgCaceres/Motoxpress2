@@ -84,7 +84,7 @@ export class HomePage implements OnInit, OnDestroy {
   async getNearbyRecogidas() {
     try {
       const position = await this.locationService.getCurrentLocation();
-      console.log('get nearby recogidas', position);
+      console.log('obtener recogidas cercanas', position);
       const { latitude, longitude } = position.coords;
       const address = await this.mapService.getAddress(latitude, longitude);
       if(address) {

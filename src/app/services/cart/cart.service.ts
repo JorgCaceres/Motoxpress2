@@ -46,10 +46,10 @@ export class CartService {
   alertClearCart(index, items, data, order?) {
     this.global.showAlert(
       order ? 
-      'Would you like to reset your cart before re-ordering from this recogida?' 
+      'te gustaria vaciar tu carrito antes de reagendar en esta recogida??' 
       : 
-      'Your cart contain items from a different recogida. Would you like to reset your cart before browsing the recogida?',
-      'Items already in Cart',
+      'tu carrito contiene entregas de distintas direcciones de recogida. te gustaria vaciar el carrito antes de ir a la recogida?',
+      'ya hay entregas en el carrito',
       [
         {
           text: 'No',
@@ -59,7 +59,7 @@ export class CartService {
           }
         },
         {
-          text: 'Yes',
+          text: 'Aceptar',
           handler: () => {
             this.clear(index, items, data, order);
           }
@@ -225,7 +225,7 @@ export class CartService {
         this.model.recogida.g.geopoint.latitude, 
         this.model.recogida.g.geopoint.longitude
         );
-        console.log('distance: ', distance);
+        console.log('distancia: ', distance);
         if(distance > radius) {
           return true;
         } else return false;

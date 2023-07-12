@@ -30,7 +30,7 @@
         <ion-label color="primary">Ordenes recientes:</ion-label>
       </ion-list-header>
       <ion-text class="ion-text-center" *ngIf="!orders || orders?.length == 0">
-        <p>No Orders Placed Yet</p>
+        <p>No hay ordenes realizadas por el momento</p>
       </ion-text>
       <ng-container *ngFor="let order of orders">
         <ng-container *ngIf="order.status === 'Created'">

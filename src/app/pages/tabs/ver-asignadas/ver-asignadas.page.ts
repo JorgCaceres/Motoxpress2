@@ -80,13 +80,13 @@ export class VerAsignadasPage implements OnInit {
 
   confirmLogout() {
     this.global.showAlert(
-      'Are you sure you want to sign-out?',
-      'Confirm',
+      'Estas seguro que quieres cerrar sesión?',
+      'Confirmar',
       [{
         text: 'No',
-        role: 'cancel'
+        role: 'cancelar'
       }, {
-        text: 'Yes',
+        text: 'Aceptar',
         handler: () => {
           this.logout();
         }
@@ -103,7 +103,7 @@ export class VerAsignadasPage implements OnInit {
       .catch(e => {
         console.log(e);
         this.global.hideLoader();
-        this.global.errorToast('Logout Failed! Check your internet connection');
+        this.global.errorToast('No se ha podido cerrar sesión, verifica tu conexión a internet');
       });
   }
 

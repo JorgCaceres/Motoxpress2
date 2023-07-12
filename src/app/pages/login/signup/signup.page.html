@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/login"></ion-back-button>
     </ion-buttons>
-    <ion-title>Create Account</ion-title>
+    <ion-title>Crear cuenta</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -19,12 +19,12 @@
             name="name"
             ngModel
             #name="ngModel"
-            placeholder="Name"
+            placeholder="Ingresa nombre o razón social"
             required>
           </ion-input>
         </ion-item>
         <ion-text color="danger" *ngIf="!name.valid && name.touched">
-          <p class="errorMsg">* Please enter your name</p>
+          <p class="errorMsg">* Porfavor ingresa tu nombre</p>
         </ion-text>
       </div>      
 
@@ -42,7 +42,7 @@
           </ion-input>
         </ion-item>
         <ion-text color="danger" *ngIf="!emailCtrl.valid && emailCtrl.touched">
-          <p class="errorMsg">* Please enter a valid email address</p>
+          <p class="errorMsg">* Ingresa una direccion de correo válida</p>
         </ion-text>
       </div>      
 
@@ -54,14 +54,14 @@
             name="phone"
             ngModel
             #phone="ngModel"
-            placeholder="Phone"
+            placeholder="Telefono"
             required
-            minlength="10"
-            maxlength="10">
+            minlength="9"
+            maxlength="9">
           </ion-input>
         </ion-item>
         <ion-text color="danger" *ngIf="!phone.valid && phone.touched">
-          <p class="errorMsg">* Please enter a valid phone number</p>
+          <p class="errorMsg">* Ingresa un número de telefono válido</p>
         </ion-text>
       </div>
 
@@ -73,33 +73,33 @@
             name="password"
             ngModel
             #passwordCtrl="ngModel"
-            placeholder="Password"
+            placeholder="Contraseña"
             required
             minlength="8">
           </ion-input>
         </ion-item>
         <ion-text color="danger" *ngIf="!passwordCtrl.valid && passwordCtrl.touched">
-          <p class="errorMsg">* Password must be of minimum 8 characters long.</p>
+          <p class="errorMsg">*La contraseña debe tener minimo 8 caracteres.</p>
         </ion-text>
       </div>
 
       <ion-item color="light">
         <ion-icon name="key" slot="start" color="primary"></ion-icon> 
         <ion-input
-          type="text"
+          type="password"
           name="c_password"
           ngModel
           #c_passwordCtrl="ngModel"
-          placeholder="Confirm Password"
+          placeholder="Confirmar Contraseña"
           required
           minlength="8">
         </ion-input>
       </ion-item>
       <ion-text color="danger" *ngIf="!c_passwordCtrl.valid && c_passwordCtrl.touched">
-        <p class="errorMsg">* Confirm Password must be of minimum 8 characters long.</p>
+        <p class="errorMsg">* Confirmacion de contraseña debe tener minimo 8 caracteres.</p>
       </ion-text>
       <ion-text color="danger" *ngIf="c_passwordCtrl.valid && c_passwordCtrl.value != passwordCtrl.value">
-        <p class="errorMsg">* Password Mismatch! You have entered a different password.</p>
+        <p class="errorMsg">* Contraseñas no coinciden, vuelve a intentarlo.</p>
       </ion-text>
     </ion-list>
 
@@ -110,7 +110,7 @@
       shape="round" 
       type="submit" 
       color="primary">
-      SIGN UP
+      REEGISTRAR
     </ion-button>
 
     <div class="ion-text-center" *ngIf="isLoading">

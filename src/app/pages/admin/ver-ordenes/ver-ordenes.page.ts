@@ -111,13 +111,13 @@ export class VerOrdenesPage implements OnInit {
   //MENSAJE DE ALERTA PARA CONFIRMAR EL LOGOUT
   confirmLogout() {
     this.global.showAlert(
-      'Are you sure you want to sign-out?',
+      'Seguro que quieres cerrar sesión?',
       'Confirm',
       [{
         text: 'No',
         role: 'cancel'
       }, {
-        text: 'Yes',
+        text: 'Aceptar',
         handler: () => {
           this.logout();
         }
@@ -134,7 +134,7 @@ export class VerOrdenesPage implements OnInit {
     .catch(e => {
       console.log(e);
       this.global.hideLoader();
-      this.global.errorToast('Logout Failed! Check your internet connection');
+      this.global.errorToast('Cierre de sesión fallido, verifique internet');
     });
   }
 

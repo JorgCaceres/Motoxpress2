@@ -20,7 +20,7 @@
         <ion-icon name="location-outline" color="dark" slot="start"></ion-icon>
         <ion-label>{{location?.title}}</ion-label>
         <ion-button slot="end" size="small" color="light" (click)="searchLocation()">
-          <span>CHANGE</span>
+          <span>CAMBIAR</span>
         </ion-button>
       </ion-item>
       <ion-row class="ion-padding-horizontal ion-text-justify">
@@ -31,7 +31,7 @@
       <ion-item-group class="ion-padding">
         <ion-item>
           <ion-label color="medium" position="floating">
-           <span>HOUSE / FLAT / BLOCK NO.</span>
+            <span>CALLE / NUMERO / DEPTO.</span>
           </ion-label>
           <ion-input type="text" autocomplete autocorrect formControlName="house"></ion-input>
           <ion-icon 
@@ -43,7 +43,7 @@
         </ion-item>
         <ion-item>
           <ion-label color="medium" position="floating">
-           <span>LANDMARK</span>
+           <span>PUNTO DE REFERENCIA</span>
           </ion-label>
           <ion-input type="text" autocomplete autocorrect formControlName="landmark"></ion-input>
           <ion-icon 
@@ -55,7 +55,7 @@
         </ion-item>
         <ion-item>
           <ion-label color="medium" position="floating">
-           <span>SAVE AS</span>
+           <span>GUARDAR COMO<</span>
           </ion-label>
           <ion-input type="text" autocomplete autocorrect formControlName="title"></ion-input>
           <ion-icon 
@@ -74,7 +74,7 @@
         type="submit" 
         color="primary"
         [disabled]="!form?.valid"
-        (click)="onSubmit()">SAVE & PROCEED
+        (click)="onSubmit()">GUARDAR Y CONTINUAR
       </ion-button>
       <ion-button 
         *ngIf="isSubmitted"

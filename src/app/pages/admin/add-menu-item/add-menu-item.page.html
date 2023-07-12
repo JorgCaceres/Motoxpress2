@@ -3,9 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/admin"></ion-back-button>
     </ion-buttons>
-    <ion-title>Add Menu Item</ion-title>
+    <ion-title>Agregar direccion de entrega</ion-title>
   </ion-toolbar>
 </ion-header>
+
 
 <ion-content class="ion-padding">
 
@@ -14,7 +15,7 @@
     <ion-list lines="none">
 
       <ion-item>
-        <ion-label>Select Recogida</ion-label>
+        <ion-label>Selecciona dirección de recogida</ion-label>
         <ion-select
           (ionChange)="changeRecogida($event)"
           interface="popover"
@@ -42,7 +43,7 @@
           </ion-select>
         </ion-item>
         <ion-text color="danger" *ngIf="!category_id.valid && category_id.touched" class="ion-text-center">
-          <p class="errorMsg">* Select Category</p>
+          <p class="errorMsg">* Selecciona una categoria</p>
         </ion-text>
       </div>
       
@@ -53,12 +54,12 @@
           name="name"
           ngModel
           #name="ngModel"
-          placeholder="Name"
+          placeholder="Nombre"
           required>
         </ion-input>
       </ion-item>
       <ion-text color="danger" *ngIf="!name.valid && name.touched">
-        <p class="errorMsg">* Please enter your name</p>
+        <p class="errorMsg">* Ingresa tu nombre</p>
       </ion-text>
 
       <ion-item>
@@ -67,7 +68,7 @@
           name="description"
           ngModel
           #description="ngModel"
-          placeholder="Description">
+          placeholder="Descripcion">
         </ion-textarea>
       </ion-item> 
 
@@ -78,27 +79,22 @@
           name="price"
           ngModel
           #price="ngModel"
-          placeholder="Price"
+          placeholder="Precio"
           required>
         </ion-input>
       </ion-item>
       <ion-text color="danger" *ngIf="!price.valid && price.touched">
-        <p class="errorMsg">* Please enter the price</p>
+        <p class="errorMsg">* Ingresa el precio</p>
       </ion-text>
 
       <ion-item>
-        <ion-label>Veg</ion-label>
-        <ion-toggle slot="end" name="veg" [(ngModel)]="veg"></ion-toggle>
-      </ion-item>
-
-      <ion-item>
-        <ion-label>Status</ion-label>
+        <ion-label>Estado</ion-label>
         <ion-toggle slot="end" name="status" [(ngModel)]="status"></ion-toggle>
       </ion-item>
 
       <div class="itemImage" *ngIf="!image || image == ''" (click)="changeImage()">
         <ion-icon name="cloud-upload-outline" color="primary"></ion-icon>
-        <p>Upload Item Image here</p>
+        <p>Selecciona una imagen del lugar de entrega aqui</p>
       </div>
       
       <input type="file" accept="image/jpeg" #filePicker (change)="onFileChosen($event)">
@@ -119,7 +115,7 @@
       shape="round" 
       type="submit" 
       color="primary">
-      Save
+      Guardar
     </ion-button>
 
     <div class="ion-text-center" *ngIf="isLoading">

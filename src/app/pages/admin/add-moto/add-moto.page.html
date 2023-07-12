@@ -51,12 +51,12 @@
           #phone="ngModel"
           placeholder="Telefono"
           required
-          minlength="10"
-          maxlength="10">
+          minlength="9"
+          maxlength="9">
         </ion-input>
       </ion-item>
       <ion-text color="danger" *ngIf="!phone.valid && phone.touched">
-        <p class="errorMsg">* Please enter a valid phone number</p>
+        <p class="errorMsg">* Ingresa un numero de telefono válido</p>
       </ion-text>
 
       <ion-item color="light" class="ion-margin-bottom">
@@ -72,7 +72,7 @@
         </ion-input>
       </ion-item>
       <ion-text color="danger" *ngIf="!passwordCtrl.valid && passwordCtrl.touched" class="ion-text-center">
-        <p class="errorMsg">* Password must be of minimum 8 characters long.</p>
+        <p class="errorMsg">* Minimo 8 caracteres.</p>
       </ion-text>
 
       <ion-item color="light">

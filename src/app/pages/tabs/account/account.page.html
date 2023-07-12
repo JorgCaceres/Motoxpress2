@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>My Account</ion-title>
+    <ion-title>Mi Perfil</ion-title>
     <ion-buttons slot="end">
       <ion-button fill="clear" (click)="confirmLogout()">
         <ion-icon name="power-outline" slot="icon-only"></ion-icon>
@@ -18,7 +18,7 @@
   <ng-container *ngIf="!isLoading">
     <ion-list class="borderBottom">
       <ion-item lines="full">
-        <ion-button slot="end" fill="clear" (click)="editProfile()">EDIT</ion-button>
+        <ion-button slot="end" fill="clear" (click)="editProfile()">EDITAR</ion-button>
         <ion-label>
           <ion-text class="ion-text-uppercase"><h4>{{profile?.name}}</h4></ion-text>
           <p>{{profile?.phone}} | {{profile?.email}}</p>
@@ -26,16 +26,16 @@
       </ion-item>
       <ion-item *ngIf="profile?.type_user == 'cliente'" lines="none" detail="true" [routerLink]="['/', 'tabs', 'address']">
         <ion-icon name="home-outline" slot="start" color="dark"></ion-icon>
-        <h5>Manage Addresses</h5>
+        <h5>Administrar Direcciones</h5>
       </ion-item>
     </ion-list>
   
     <ion-list *ngIf="profile?.type_user == 'cliente'">
       <ion-list-header>
-        <ion-label color="primary">PAST ORDERS</ion-label>
+        <ion-label color="primary">ORDENES ANTERIORES</ion-label>
       </ion-list-header>
       <ion-text class="ion-text-center" *ngIf="!orders || orders?.length == 0">
-        <p>No Orders Placed Yet</p>
+        <p>No hay ordenes por el momento</p>
       </ion-text>
       <app-orders 
         *ngFor="let order of orders" 
@@ -44,6 +44,7 @@
         (help)="getHelp($event)">
       </app-orders>
     </ion-list>
+    <ion-img *ngIf="profile?.type_user == 'rider'" style="margin-top: 150px;" src="../../../assets/imgs/Logo MOTOXPRESS.png" class="img"></ion-img>
   </ng-container>
 
 </ion-content>

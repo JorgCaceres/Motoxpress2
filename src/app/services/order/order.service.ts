@@ -92,7 +92,7 @@ export class OrderService {
         uid,
         param.instruction    
       ));
-      console.log('latest order: ', currentOrders);
+      console.log('Ordenes recientes: ', currentOrders);
       currentOrders = currentOrders.concat(this._orders.value);
       console.log('orders: ', currentOrders);
       this._orders.next(currentOrders);

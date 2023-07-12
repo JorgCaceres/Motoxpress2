@@ -9,6 +9,7 @@ import { GlobalService } from 'src/app/services/global/global.service';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import { Recogida } from 'src/app/models/recogida.model';
+import db from 'src/environments/configfb';
 
 @Component({
   selector: 'app-add-recogida',
@@ -25,6 +26,8 @@ export class AddRecogidaPage implements OnInit {
   isCuisine: boolean = false;
   cuisines: any[] = [];
   categories: any[] = [];
+  docRef: any;
+  activeForm: boolean = false;
 
   constructor(
     private authService: AuthService, 
@@ -57,7 +60,6 @@ export class AddRecogidaPage implements OnInit {
       }
     } catch(e) {
       console.log(e);
-
     }
   }
 
@@ -67,7 +69,7 @@ export class AddRecogidaPage implements OnInit {
     console.log(this.isCuisine);
     const checkString = this.categories.find(x => x == this.category);
     if(checkString) {
-      this.global.errorToast('Category already added');
+      this.global.errorToast('Categoria ya agregada');
       return;
     }
     this.categories.push(this.category);
@@ -113,21 +115,40 @@ export class AddRecogidaPage implements OnInit {
   onSubmit(form: NgForm) {
     if(!form.valid) return;
     if(!this.coverImage || this.coverImage == '') {
-      this.global.errorToast('Please select a cover image');
+      this.global.errorToast('Selecciona una imagen de portada');
       return;
     }
     if(this.location && this.location?.lat) this.addRecogida(form);
-    else this.global.errorToast('Please select address for this recogida');
+    else this.global.errorToast('Selecciona una imagen para la direccion de recogida');
   }
+
+
+  getID() {
+    const id_recogida = {
+      Nombre: 'TEST'
+    };
+  
+    db.collection('recogidas')
+      .add(id_recogida)
+      .then(docRef => {
+        console.log('UID del documento:', docRef.id);
+        this.docRef = docRef
+        console.log('UID del documento INSTANCIADO:', this.docRef.id);
+      });
+
+      this.activeForm = true;
+  }
+  
+
 
   async addRecogida(form: NgForm) {
     try {
       this.isLoading = true;
       console.log(form.value);
-      const data = await this.authService.register(form.value, 'recogida');
+      const data = this.docRef
       if(data?.id) {
         const position = new firebase.firestore.GeoPoint(this.location.lat, this.location.lng);
-        const recogida = new Recogida(
+        const recogida = new Recogida (
           data.id,
           this.coverImage ? this.coverImage : '',
           form.value.res_name,
@@ -136,8 +157,6 @@ export class AddRecogidaPage implements OnInit {
           0,
           form.value.delivery_time,
           form.value.price,
-          form.value.phone,
-          form.value.email,
           false,
           form.value.description,
           form.value.openTime,
@@ -152,20 +171,19 @@ export class AddRecogidaPage implements OnInit {
         console.log(result);
         await this.apiService.addCategories(this.categories, data.id);
         // form.reset();
-        this.global.successToast('Recogida Added Successfully');
+        this.global.successToast('Recogida agregada exitosamente!');
       } else {
-        this.global.showAlert('Recogida Registration failed');
+        this.global.showAlert('Error al agregar una recogida');
       }
       this.isLoading = false;       
     } catch(e) {
       console.log(e);
       this.isLoading = false;
-      let msg: string = 'Could not register the recogida, please try again.';
+      let msg: string = 'No se pudo registrar una recogida, reintenta';
       if(e.code == 'auth/email-already-in-use') {
         msg = e.message;
       }
       this.global.showAlert(msg);
     }
   }
-
 }
